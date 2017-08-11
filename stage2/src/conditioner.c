@@ -22,7 +22,8 @@ business_fsm(enum State state, struct ConditionerInter *cond, struct StorageInte
             }
             case _Waiting: {
                 int wait = storage->property_get_int(WaitingIdle);
-                x_sleep(wait);
+                /** Не хватает обработки ошибок */
+                cond->process_engine(Waiting, wait);
                 state = _Control;
                 break;
             }

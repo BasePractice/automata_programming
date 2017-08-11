@@ -28,6 +28,8 @@ test_engine_machine(enum EngineMode mode, int timeout) {
             current_temperature++;
             break;
         }
+        case Waiting:
+            break;
     }
     x_sleep(timeout);
     return 1;

@@ -23,7 +23,9 @@ enum EngineMode {
     /** Охлаждение */
     Cooling,
     /** Нагрев */
-    Heating
+    Heating,
+    /** Ожидание */
+    Waiting
 };
 
 /** Интерфейс хранилища */
