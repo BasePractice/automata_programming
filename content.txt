@@ -1,0 +1,5 @@
+storage1 - Parmela and SPIN
+storage2 - CMake project, C implementation, Unit testing
+storage3 - Exception+
+storage4 - Emulation engine in main application. (read temperature from file)
+storage5 - Logging

@@ -1,0 +1,56 @@
+      [Init] Start
+          [Conditioner 1] Enter
+          [Conditioner 1] Load  temperature and properties
+          [Conditioner 1] Loaded: 12C, Current: 14C
+          [Conditioner 1] Controling
+          [Conditioner 1] Current temperature: 14C
+          [Conditioner 1] Cooling
+          [Conditioner 1] Controling
+          [Conditioner 1] Current temperature: 13C
+          [Conditioner 1] Cooling
+          [Conditioner 1] Controling
+          [Conditioner 1] Current temperature: 12C
+          [Conditioner 1] Waiting
+          [Conditioner 1] Controling
+          [Conditioner 1] Current temperature: 12C
+          [Conditioner 1] Waiting
+          [Conditioner 1] Controling
+          [Conditioner 1] Current temperature: 12C
+          [Conditioner 1] Waiting
+          [Conditioner 1] Controling
+          [Conditioner 1] Current temperature: 12C
+          [Conditioner 1] Waiting
+          [Conditioner 1] Controling
+          [Conditioner 1] Current temperature: 12C
+          [Conditioner 1] Waiting
+          [Conditioner 1] Controling
+          [Conditioner 1] Current temperature: 12C
+          [Conditioner 1] Waiting
+          [Conditioner 1] Simulating. Downgrade temperature.
+          [Conditioner 1] Controling
+          [Conditioner 1] Current temperature: 10C
+          [Conditioner 1] Heating
+          [Conditioner 1] Controling
+          [Conditioner 1] Current temperature: 11C
+          [Conditioner 1] Heating
+          [Conditioner 1] Controling
+          [Conditioner 1] Current temperature: 12C
+          [Conditioner 1] Waiting
+          [Conditioner 1] Controling
+          [Conditioner 1] Current temperature: 12C
+          [Conditioner 1] Waiting
+          [Conditioner 1] Controling
+          [Conditioner 1] Current temperature: 12C
+          [Conditioner 1] Waiting
+          [Conditioner 1] Controling
+          [Conditioner 1] Current temperature: 12C
+          [Conditioner 1] Waiting
+          [Conditioner 1] Controling
+          [Conditioner 1] Current temperature: 12C
+          [Conditioner 1] Waiting
+          [Conditioner 1] Controling
+          [Conditioner 1] Current temperature: 12C
+          [Conditioner 1] Waiting
+          [Conditioner 1] Store temperature and properties
+          [Conditioner 1] Exit
+2 processes created
