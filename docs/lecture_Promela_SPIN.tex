@@ -243,8 +243,7 @@ sleep, usleep, time
 При написание данного руководства были использованы материалы с различных ресурсов,
 особо хочется выделить учебный материал \cite{Alessandra:2014}
 \section*{Язык Promela}\label{promela_LANGUAGE}
-\addcontentsline{toc}{section}{Язык Promela}
-\lhead{Язык Promela}
+\addcontentsline{toc}{section}{Язык Promela}\lhead{Язык Promela}
 \texttt{PROMELA (Process or Protocol Meta Language)} -- это язык описания описания моделей верификации,
 созданный \texttt{Gerard J. Holzmann}\cite{Promela:Wiki}. Язык поддерживает создание процессов
 для проверки распределенных моделей. Модели в языке могут взаимодействовать между собой при помощи
@@ -895,18 +894,193 @@ x.Field1 = 1;
 \addcontentsline{toc}{section}{Модель \texttt{Promela}}
 \lhead{Модель \texttt{Promela}}
 
+Описанный выше объект управления формализуем при помощи \nameref{promela_LANGUAGE}.
+
+\begin{alltt}
+\cname{mtype} = \{START, ON, OFF, CONTROL, COOLING, HEATING, WAITING\};
+
+\cname{mtype} state = START;
+\cname{int} guard\_temperature = 12;
+\cname{int} current\_temperature = 0;
+\cname{int} waiting\_count = 10;
+
+\cname{proctype} conditioner() \{
+  printf("[Conditioner \%d] Вход{\textbackslash}n", \_pid);
+  \cname{do}
+    :: (state == OFF) -> 
+      printf("[Conditioner \%d] Сохраняем температуру и параметры{\textbackslash}n", \_pid);
+      \cname{break};
+    :: (state == ON) ->
+      printf("[Conditioner \%d] Загрузка темепратуры и параметров{\textbackslash}n", \_pid);
+      guard_temperature = 12;
+      current_temperature = 14;
+      printf("[Conditioner \%d] Loaded: \%dC, Current: \%dC{\textbackslash}n", 
+             \_pid, guard\_temperature, current\_temperature);
+      state = CONTROL;
+    :: (state == CONTROL) ->
+      printf("[Conditioner \%d] Управление{\textbackslash}n", \_pid);
+      /** Получаем тепуратуру помещения */
+      printf("[Conditioner \%d] Температура: \%dC{\textbackslash}n", 
+             \_pid, current\_temperature);
+      \cname{if}
+        :: (current\_temperature > guard\_temperature) ->
+          state = COOLING
+        :: (current\_temperature < guard\_temperature) ->
+          state = HEATING;
+        :: \cname{else} ->
+          state = WAITING; 
+      \cname{fi}      
+    :: (state == COOLING) ->
+      \cname{assert}(current\_temperature > guard\_temperature);
+      printf("[Conditioner \%d] Охлаждение{\textbackslash}n", \_pid);
+      current\_temperature--;
+      state = CONTROL;
+    :: (state == HEATING) ->
+      \cname{assert}(current\_temperature < guard\_temperature);
+      printf("[Conditioner \%d] Нагрев{\textbackslash}n", \_pid);
+      current\_temperature++;
+      state = CONTROL;
+    :: (state == WAITING) ->
+      \cname{assert}(current\_temperature == guard\_temperature);
+      printf("[Conditioner \%d] Ожидание{\textbackslash}n", \_pid);
+      state = CONTROL;
+      \cname{if}
+        :: (waiting\_count == 5) ->
+          printf("[Conditioner \%d] Эмуляция. Понидение температуры.{\textbackslash}n", \_pid);
+          current\_temperature = guard\_temperature - 2;
+          waiting\_count--;
+        :: (waiting\_count < 0) ->
+          state = OFF;
+        :: \cname{else} ->
+          waiting\_count--;
+      \cname{fi}  
+  \cname{od}
+  printf("[Conditioner \%d] Выход{\textbackslash}n", \_pid);
+\}
+
+
+\cname{init} \{
+  \cname{run} conditioner();
+  \cname{assert}(state == START);
+  printf("[Init] Запуск{\textbackslash}n");
+  state = ON
+\}
+
+\end{alltt}
+
+Определено 7 состояний:
+\begin{enumerate}
+  \item \texttt{START} - ?
+  \item \texttt{ON} - Состояние включение объекта управления
+  \item \texttt{OFF} - Состояние выключение объекта управления
+  \item \texttt{CONTROL} - Состояние управления
+  \item \texttt{COOLING} - Состояние нагрева
+  \item \texttt{HEATING} - Состояние охлаждения
+  \item \texttt{WAITING} - Состояние ожидания
+\end{enumerate}
+
+\newpage
+\section*{Проект Си}\label{practical_work_3}
+\addcontentsline{toc}{section}{Проект Си}\lhead{Проект Си}
+
+\begin{lstlisting}[label={main_c_fsm}, caption={Пример управления состояниями на \texttt{C}}]
+#include "conditioner.h"
+
+int
+business_fsm(enum State               state, 
+             struct ConditionerInter *cond, 
+             struct StorageInter     *storage) {
+    int ret = 1;
+    do {
+        if (cond->is_running && !cond->is_running(state)) {
+            state = _PowerOff;
+        }
+        switch (state) {
+            case _PowerOff: {
+                ret = storage->property_store();
+                break;
+            }
+            case _PowerOn: {
+                storage->property_load();
+                state = _Control;
+                break;
+            }
+            case _Waiting: {
+                int wait = storage->property_get_int(WaitingIdle);
+                cond->process_engine(Waiting, wait);
+                state = _Control;
+                break;
+            }
+            case _Heating: {
+                int wait = storage->property_get_int(WaitingHeating);
+                cond->process_engine(Heating, wait);
+                state = _Control;
+                break;
+            }
+            case _Cooling: {
+                int wait = storage->property_get_int(WaitingCooling);
+                cond->process_engine(Cooling, wait);
+                state = _Control;
+                break;
+            }
+            case _Control: {
+                int guard_temperature = 
+                          storage->property_get_int(Temperature);
+                int current_temperature = cond->get_current_temperature();
+                if (current_temperature > guard_temperature) {
+                    state = _Cooling;
+                } else if (current_temperature < guard_temperature) {
+                    state = _Heating;
+                } else {
+                    state = _Waiting;
+                }
+                break;
+            }
+        }
+    } while (state != _PowerOff);
+    return ret;
+}
+\end{lstlisting}
+
+
+\newpage
+\section*{Модульное тестирование}\label{practical_work_4}
+\addcontentsline{toc}{section}{Модульное тестирование}\lhead{Модульное тестирование}
+
+\newpage
+\section*{Обработка ошибок}\label{practical_work_5}
+\addcontentsline{toc}{section}{Обработка ошибок}\lhead{Обработка ошибок}
+
+\newpage
+\section*{Логирование}\label{practical_work_6}
+\addcontentsline{toc}{section}{Логирование}\lhead{Логирование}
+
+\newpage
+\section*{Эмулирование внешних устройств}\label{practical_work_7}
+\addcontentsline{toc}{section}{Эмулирование внешних устройств}\lhead{Эмулирование внешних устройств}
+
+
 \newpage
 \chapter*{Лабораторные работы}\label{labs_works}
-\addcontentsline{toc}{chapter}{Лабораторные работы}
-\lhead{Лабораторные работы}
+\addcontentsline{toc}{chapter}{Лабораторные работы}\lhead{Лабораторные работы}
+
+\begin{enumerate}
+  \item Описание объекта управления
+  \item Описание модели \texttt{Promela}
+  \item Структура проекта
+  \item Модульное тестирование 
+  \item Обработка ошибок
+  \item Логирование
+  \item Эмулирование внешних устройств
+\end{enumerate}
 
 \section*{Задания}\label{lab_work_formatting}
 \addcontentsline{toc}{section}{Задания}
 \lhead{Задания}
 
 \begin{enumerate}
-  \item Светофор с индикацией оставшегося времени
-  \item Грузовой лифт
+  \item Светофор с индикацией оставшегося времени(без детализации часов реального времени)
+  \item Грузовой лифт(проверка грузоподьемности)
   \item Автомобильный манипулятор
   \item Супервизор(управление процессами)
   \item Автоматический нагреватель воды
@@ -1186,17 +1360,6 @@ x.Field1 = 1;
     \end{enumerate}
   \item Ваша работа собирается на тестовом стенде, проходит верификацию модели, проходят все тесты(исполняется тестовый пример)
 \end{enumerate}
-
-\newpage
-\section*{Лабораторная работа №1}\label{lab_work_1}
-\addcontentsline{toc}{section}{Лабораторная работа №1}
-\lhead{Лабораторная работа №1}
-
-
-\newpage
-\section*{Лабораторная работа №2}\label{lab_work_2}
-\addcontentsline{toc}{section}{Лабораторная работа №2}
-\lhead{Лабораторная работа №2}
 
 
 \newpage

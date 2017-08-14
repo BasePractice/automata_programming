@@ -12,7 +12,6 @@ set(CONDITIONER_BUILD_NUMBER    1)
 
 include_directories(3rdparty/gtest/googletest/include)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(src)
 
 if (MSVC)
     set(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} /SUBSYSTEM:CONSOLE /IGNORE:4099")
@@ -35,23 +34,14 @@ else ()
 endif ()
 
 add_subdirectory(3rdparty/gtest/googletest)
+
 add_definitions(
         -DTESTS_DATA_DIRECTORY="tests_data/"
 )
 
-configure_file(
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/version.h.in
-        ${CMAKE_CURRENT_BINARY_DIR}/version.h
-        @ONLY
-)
+add_subdirectory(stages/stage2)
+add_subdirectory(stages/stage3)
 
-set(SOURCE_FILES src/conditioner.c src/memory_storage.c)
-set(MAIN_SOURCE_FILES src/main.c)
-set(TESTS_SOURCE_FILES tests/conditioner_i_tests.cpp tests/memory_storage_tests.cpp)
-
-add_executable(${CMAKE_PROJECT_NAME} ${SOURCE_FILES} ${MAIN_SOURCE_FILES} )
-add_executable(${CMAKE_PROJECT_NAME}_tests ${TESTS_SOURCE_FILES} ${SOURCE_FILES})
-target_link_libraries(${CMAKE_PROJECT_NAME}_tests gtest gtest_main)
 file(COPY
         ${CMAKE_SOURCE_DIR}/tests_data/conditioner_001.blob
         DESTINATION

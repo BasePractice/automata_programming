@@ -3,3 +3,4 @@ storage2 - CMake project, C implementation, Unit testing
 storage3 - Exception+
 storage4 - Emulation engine in main application. (read temperature from file)
 storage5 - Logging. Append external controling(_Controling -> state = cond->control(state))
+storage6 - Git and GitHub
