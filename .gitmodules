@@ -1,3 +1,0 @@
-[submodule "stage2/3rdparty/gtest"]
-	path = stage2/3rdparty/gtest
-	url = https://github.com/google/googletest.git
