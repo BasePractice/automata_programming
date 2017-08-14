@@ -1,6 +1,6 @@
 @echo off
 
-set LATEX_PATH=C:\MiKTeX
+set LATEX_PATH=D:\MiKTeX
 set PDFLATEX=%LATEX_PATH%\miktex\bin\x64\pdflatex.exe
 set LATEX=%LATEX_PATH%\miktex\bin\x64\latex.exe
 set DVIPDFM=%LATEX_PATH%\miktex\bin\x64\dvipdfm.exe

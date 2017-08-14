@@ -924,7 +924,241 @@ x.Field1 = 1;
 
 \section*{Требования к оформлению кода}\label{lab_work_formatting}
 \addcontentsline{toc}{section}{Требования к оформлению кода}
-\lhead{Требования к оформлению кода}
+\lhead{Требования к оформлению кода} \label{style:cxx_code_style}
+
+\subsection*{Отступы}\label{lab_work_formatting_tabs}
+\addcontentsline{toc}{subsection}{Отступы}
+\begin{itemize}
+	\item [$*$] Для обозначения отступа используйте 4 пробела подряд;
+	\item [$*$] Используйте проблелы, а не табуляцию.
+\end{itemize}
+
+\subsection*{Объявление переменных}\label{lab_work_formatting_variables}
+\addcontentsline{toc}{subsection}{Объявление переменных}
+\begin{itemize}
+	\item [$*$] Объявляйте по одной переменной в строке;
+	\item [$*$] Избегайте, если это возможно, коротких и запутанных названий переменных (Например: <<\texttt{a}>>, <<\texttt{rbarr}>>, <<\texttt{nughdeget}>>);
+	\item [$*$] Односимвольные имена переменных подходят только для итераторов циклов, небольшого локального контекста и временных переменных. В остальных случаях имя переменной должно отражать ее назначение;
+	\item [$*$] Заводите переменные только по мере необходимости:
+	\begin{lstlisting}
+		// Wrong
+		int a, b;
+		char *c, *d;
+		// Correct
+		int   height;
+		int   width;
+		char *name_of_this;
+		char *name_of_that;
+	\end{lstlisting}
+	\item [$*$] Функции и переменные должны именоваться с прописной буквы, а если имя переменной или функции состоит из нескольких слов, то они разделяются нижним подчеркиванием;
+	\item [$*$] Избегайте аббревиатур:
+	\begin{lstlisting}
+		// Wrong
+		short Cntr;
+		char  ITEM_DELIM = '\t';
+		// Correct
+		short counter;
+		char  item_delimiter = '\t';
+	\end{lstlisting}
+\item [$*$] Имена классов, составных типов данных всегда начинаются с заглавной буквы.
+\end{itemize}
+
+\subsection*{Пробелы}\label{lab_work_formatting_whitespaces}
+\addcontentsline{toc}{subsection}{Пробелы}
+\begin{itemize}
+	\item [$*$] Используйте пустые строки для логической группировки операторов, где это возможно;
+	\item [$*$] Всегда используйте одну пустую строку в качестве разделителя;
+	\item [$*$] Всегда используйте один пробел перед фигурной скобкой:
+	\begin{lstlisting}
+		// Wrong
+		if(foo){
+		}
+		
+		// Correct
+		if (foo) {
+		}
+	\end{lstlisting}
+	
+	\item [$*$] Всегда ставьте один пробел после \texttt{*} или \texttt{\&}, если они стоят перед описанием типов. Но никогда не ставьте пробелы после \texttt{*} или \texttt{\&} и именем переменной:
+	\begin{lstlisting}
+		char *x;
+		const Class &my_class;
+		const char * const y = "hello";
+	\end{lstlisting}
+	\item [$*$] Бинарные операции отделяются пробелами с 2-х строн;
+	\item [$*$] После преобразования типов не ставьте пробелов;
+	\item [$*$] Избегайте проеобразования типов в стиле C, если ваш код на C++:
+	\item [$*$] 
+	\begin{lstlisting}
+		// Wrong
+		char * block_of_memory = (char *) malloc(data.size());
+		// Correct
+		char * block_of_memory = reinterpret_cast<char *>( malloc(data.size()) );
+	\end{lstlisting}
+\end{itemize}
+
+\subsection*{Фигурные скобки}\label{lab_work_formatting_brices1}
+\addcontentsline{toc}{subsection}{Фигурные скобки}
+\begin{itemize}
+	\item [$*$] Возьмите за основу расстановку открывающих фигурных скобок на одной строке с выражением, которому они предшествуют:
+	\begin{lstlisting}
+		// Wrong
+		if (codec)
+		{
+		}
+		
+		// Correct
+		if (codec) {
+		}
+	\end{lstlisting}
+	\item [$*$] Исключение: Тело функции и описание класса всегда открывается фигурной скобкой, стоящей на тойже строке:
+	\begin{lstlisting}
+		static void foo(int g) {
+		  fprintf(stdout, "foo: %i", g);
+		}
+		
+		class Moo {
+		};
+	\end{lstlisting}
+	\item [$*$] Используйте фигурные скобки в условиях, если тело условия в размере превышает одну линию, или тело условия достаточное сложное и выделение скобками действительно необходимо:
+	\begin{lstlisting}
+		// Wrong
+		if (address.is_empty) {
+		  return false;
+		}
+		
+		for (int i = 0; i < 10; ++i) {
+		  fprintf(stdout, "%i", i);
+		}
+		
+		// Correct
+		if (address.is_empty)
+		  return true;
+		  
+		for (int i = 0; i < 10; ++i)
+		  fprintf(stdout, "%i", i);
+	\end{lstlisting}
+	\item [$*$] Исключение 1: Используйте скобки, если родительское выражение состоит из нескольких строк или оберток:
+	\begin{lstlisting}
+		// Correct
+		if (address.is_empty || !is_valid())
+		    || !codec) {
+			return false;
+		}
+	\end{lstlisting}
+	\item [$*$] Исключение 2: Используйте фигурные скобки, когда тела ветвлений if-then-else занимают несколько строчек:
+	\begin{lstlisting}
+		// Wrong
+		if (address.is_empty)
+		  return false;
+		else {
+		  fprintf(stdout, "%s", address.c_str());
+		  ++it;
+		}
+		
+		// Correct
+		if (address.isEmpty()) {
+		  return false;
+		} else {
+		  fprintf(stdout, "%s", address.c_str());
+		  ++it;
+		}
+		
+		// Wrong
+		if (a)
+		  if (b)
+		    ...
+		  else
+		    ...
+	    
+		// Correct
+		// Wrong
+		if (a) {
+		  if (b)
+		    ...
+		  else
+		    ...
+		}
+	\end{lstlisting}
+	\item [$*$] Используйте фигурные скобки для обозначения пустого тела условия:
+	\begin{lstlisting}
+		// Wrong
+		while (a);
+		
+		// Correct
+		while (a) {}
+	\end{lstlisting}
+\end{itemize}
+
+\subsection*{Круглые скобки}\label{lab_work_formatting_brices2}
+\addcontentsline{toc}{subsection}{Круглые скобки}
+\begin{itemize}
+	\item [$*$] Используйте круглые скобки для группировки выражений:
+	\begin{lstlisting}
+		// Wrong
+		if (a && b || c)
+		
+		// Correct
+		if ((a && b) || c)
+		
+		// Wrong
+		a + b & c
+		// Correct
+		(a + b) & c
+	\end{lstlisting}
+\end{itemize}
+
+\subsection*{Использование конструкции \texttt{switch}}\label{lab_work_formatting_switch}
+\addcontentsline{toc}{subsection}{Использование конструкции \texttt{switch}}
+\begin{itemize}
+	\item [$*$] Операторы \texttt{case} должны быть в одном столбце со \texttt{switch}
+	\item [$*$] Каждый оператор \texttt{case} должен иметь закрывающий \texttt{break} (или \texttt{return}) или комментарий, котрой предполагает намеренное отсутсвие \texttt{break} или \texttt{return}:
+	\begin{lstlisting}
+		switch (my_enum) {
+		case Value1:
+		  do_somthing();
+		  break;
+		case Value2:
+		  do_somthing_else();
+		  // continue
+		default:
+		  default_handling();
+		  break;
+		}
+	\end{lstlisting}
+\end{itemize}
+
+\subsection*{Разрыв строк}\label{lab_work_formatting_lines}
+\addcontentsline{toc}{subsection}{Разрыв строк}
+\begin{itemize}
+	\item [$*$] Длина строки кода не должна превышать 100 символов. Если надо -- используйте разрыв строки.
+	\item [$*$] Запятые помещаются в конец разорванной линии; операторы помещаются в начало новой строки. В зависимости от используемой вами \texttt{IDE}, оператор на конце разорванной строки можно проглядеть:
+	\begin{lstlisting}
+		// Correct
+		if (long_expression
+		    + other_long_expression
+			+ other_other_long_expression) {
+		}
+		
+		// Wrong
+		if (long_expression +
+		    other_long_expression +
+			other_other_long_expression) {
+		}
+	\end{lstlisting}
+\end{itemize}
+
+\subsection*{Наследование и ключево слово \texttt{virtual}}\label{lab_work_formatting_virtual}
+\addcontentsline{toc}{subsection}{Наследование и ключево слово \texttt{virtual}}
+\begin{itemize}
+	\item [$*$] При переопредлении \texttt{virtual}-метода, \emph{ни за что} не помещайте слово \texttt{virtual} в заголовочный файл.
+\end{itemize}
+
+\subsection*{Главное исключение}\label{lab_work_formatting_main}
+\addcontentsline{toc}{subsection}{Главное исключение}
+\begin{itemize}
+	\item [$*$] Не бойтесь нарушать описанные выше правила, если вам кажется, что они только запутают ваш код.
+\end{itemize}
 
 
 \section*{Требования к оформлению работы}\label{lab_work_}
