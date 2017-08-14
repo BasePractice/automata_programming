@@ -67,11 +67,16 @@ memory_storage_property_store_to_file(const char *const file_name) {
 }
 
 void
-memory_storage_clear_errors() {
+memory_storage_set_errors(int value) {
     _errors = 0;
 }
 
+void
+memory_storage_clear_errors() {
+    memory_storage_set_errors(0);
+}
+
 int
-memory_storage_has_errors() {
+memory_storage_errors() {
     return _errors;
 }

@@ -29,7 +29,7 @@ enum EngineMode {
 };
 
 struct BaseInter {
-    int (*has_errors)();
+    int (*errors)();
 };
 
 /** Интерфейс хранилища */

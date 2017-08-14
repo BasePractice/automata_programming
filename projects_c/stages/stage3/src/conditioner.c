@@ -12,7 +12,7 @@ business_fsm(enum State state, struct ConditionerInter *cond, struct StorageInte
             case _PowerOff: {
                 /** Не хватает обработки ошибок */
                 ret = storage->property_store();
-                if ( (*storage->base.has_errors)() ) {
+                if ( (*storage->base.errors)() ) {
                     state = _Error;
                 }
                 break;

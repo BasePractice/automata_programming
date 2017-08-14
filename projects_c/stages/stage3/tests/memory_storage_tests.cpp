@@ -50,4 +50,11 @@ TEST(EmulatorStorage, StoreToFile) {
     ASSERT_TRUE(memory_storage_property_store_to_file(TESTS_DATA_DIRECTORY "conditioner_test.blob"));
 }
 
+TEST(EmulatorStorage, Errors) {
+    memory_storage_clear_errors();
+    ASSERT_EQ(memory_storage_errors(), 0);
+    memory_storage_set_errors(1);
+    ASSERT_EQ(memory_storage_errors(), 1);
+}
+
 

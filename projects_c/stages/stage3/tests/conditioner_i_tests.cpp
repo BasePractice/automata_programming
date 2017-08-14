@@ -61,7 +61,7 @@ TEST(Conditioner, BusinessFSM) {
     storage.property_load = test_storage_property_load;
     storage.property_set_int = memory_storage_property_set_int;
     storage.property_store = memory_storage_property_store;
-    storage.base.has_errors = memory_storage_has_errors;
+    storage.base.errors = memory_storage_errors;
     ASSERT_TRUE(business_fsm(_PowerOn, &inter, &storage));
     ASSERT_EQ(current_temperature, guard_temperature);
 }

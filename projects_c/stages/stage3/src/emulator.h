@@ -23,8 +23,10 @@ memory_storage_property_set_int(enum Property key, int value);
 
 void
 memory_storage_clear_errors();
+void
+memory_storage_set_errors(int value);
 int
-memory_storage_has_errors();
+memory_storage_errors();
 
 #if defined(__cplusplus)
 }
