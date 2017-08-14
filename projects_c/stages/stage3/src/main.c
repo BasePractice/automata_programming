@@ -56,6 +56,7 @@ main(int argc, char **argv) {
     storage.property_load = main_storage_property_load;
     storage.property_set_int = memory_storage_property_set_int;
     storage.property_store = main_storage_property_store;
+    storage.base.has_errors = memory_storage_has_errors;
     ret = business_fsm(_PowerOn, &inter, &storage);
     return ret == 1 ? EXIT_SUCCESS : EXIT_FAILURE;
 }

@@ -3,7 +3,7 @@
 #include <conditioner_i.h>
 
 enum State {
-    _PowerOff, _PowerOn, _Control, _Cooling, _Heating, _Waiting
+    _PowerOff, _PowerOn, _Control, _Cooling, _Heating, _Waiting, _Error
 };
 
 #if defined(__cplusplus)

@@ -28,8 +28,13 @@ enum EngineMode {
     Waiting
 };
 
+struct BaseInter {
+    int (*has_errors)();
+};
+
 /** Интерфейс хранилища */
 struct StorageInter {
+    struct BaseInter base;
     /** Загрузка параметров их хранилища */
     int (*property_load)();
     /** Сохранение параметров */
@@ -41,7 +46,7 @@ struct StorageInter {
 
 /** Основной интерфейс кондициронер */
 struct ConditionerInter {
-
+    struct BaseInter base;
     /** Получение температуры помещения */
     int (*get_current_temperature)();
     /** Выставление работы с установкой режима работы и времени работы */

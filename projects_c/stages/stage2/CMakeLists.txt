@@ -15,10 +15,11 @@ configure_file(
         @ONLY
 )
 
+set(HEADER_FILES src/conditioner_i.h src/emulator.h)
 set(SOURCE_FILES src/conditioner.c src/memory_storage.c)
 set(MAIN_SOURCE_FILES src/main.c)
 set(TESTS_SOURCE_FILES tests/conditioner_i_tests.cpp tests/memory_storage_tests.cpp)
 
-add_executable(${CMAKE_PROJECT_NAME}2 ${SOURCE_FILES} ${MAIN_SOURCE_FILES} )
-add_executable(${CMAKE_PROJECT_NAME}2_tests ${TESTS_SOURCE_FILES} ${SOURCE_FILES})
+add_executable(${CMAKE_PROJECT_NAME}2 ${SOURCE_FILES} ${MAIN_SOURCE_FILES} ${HEADER_FILES})
+add_executable(${CMAKE_PROJECT_NAME}2_tests ${TESTS_SOURCE_FILES} ${SOURCE_FILES} ${HEADER_FILES})
 target_link_libraries(${CMAKE_PROJECT_NAME}2_tests gtest gtest_main)
