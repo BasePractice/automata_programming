@@ -68,7 +68,7 @@ memory_storage_property_store_to_file(const char *const file_name) {
 
 void
 memory_storage_set_errors(int value) {
-    _errors = 0;
+    _errors = value;
 }
 
 void

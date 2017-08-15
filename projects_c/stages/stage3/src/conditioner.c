@@ -1,8 +1,19 @@
 #include "conditioner.h"
 
+static enum State
+check_errors(enum State state, struct ConditionerInter *cond, struct StorageInter *storage) {
+    if ((*storage->base.errors)()) {
+        return _StorageError;
+    }
+    if ((*cond->base.errors)()) {
+        return _CondError;
+    }
+    return state;
+}
+
 int
 business_fsm(enum State state, struct ConditionerInter *cond, struct StorageInter *storage) {
-    int ret = 1;
+    int ret = ERR_OK;
     do {
         /** Для тестирования. Эмуляция внешнего управления*/
         if (cond->is_running && !cond->is_running(state)) {
@@ -10,38 +21,31 @@ business_fsm(enum State state, struct ConditionerInter *cond, struct StorageInte
         }
         switch (state) {
             case _PowerOff: {
-                /** Не хватает обработки ошибок */
-                ret = storage->property_store();
-                if ( (*storage->base.errors)() ) {
-                    state = _Error;
-                }
+                storage->property_store();
+                state = check_errors(state, cond, storage);
                 break;
             }
             case _PowerOn: {
-                /** Не хватает обработки ошибок */
                 storage->property_load();
-                state = _Control;
+                state = check_errors(_Control, cond, storage);
                 break;
             }
             case _Waiting: {
                 int wait = storage->property_get_int(WaitingIdle);
-                /** Не хватает обработки ошибок */
                 cond->process_engine(Waiting, wait);
-                state = _Control;
+                state = check_errors(_Control, cond, storage);
                 break;
             }
             case _Heating: {
                 int wait = storage->property_get_int(WaitingHeating);
-                /** Не хватает обработки ошибок */
                 cond->process_engine(Heating, wait);
-                state = _Control;
+                state = check_errors(_Control, cond, storage);
                 break;
             }
             case _Cooling: {
                 int wait = storage->property_get_int(WaitingCooling);
-                /** Не хватает обработки ошибок */
                 cond->process_engine(Cooling, wait);
-                state = _Control;
+                state = check_errors(_Control, cond, storage);
                 break;
             }
             case _Control: {
@@ -54,10 +58,19 @@ business_fsm(enum State state, struct ConditionerInter *cond, struct StorageInte
                 } else {
                     state = _Waiting;
                 }
+                state = check_errors(state, cond, storage);
                 break;
             }
-            case _Error: {
+            case _StorageError: {
+                /** Обработка ошибок */
                 state = _PowerOff;
+                ret = ERR_STORAGE;
+                break;
+            }
+            case _CondError: {
+                /** Обработка ошибок */
+                state = _PowerOff;
+                ret = ERR_CONDITIONER;
                 break;
             }
         }

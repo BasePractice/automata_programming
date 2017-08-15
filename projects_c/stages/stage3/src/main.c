@@ -42,6 +42,11 @@ product_is_running(int state) {
 }
 
 int
+product_errors() {
+    return 0;
+}
+
+int
 main(int argc, char **argv) {
     int ret;
     struct ConditionerInter inter;
@@ -52,6 +57,7 @@ main(int argc, char **argv) {
     inter.get_current_temperature = product_get_current_temperature;
     inter.process_engine = product_process_engine;
     inter.is_running = product_is_running;
+    inter.base.errors = product_errors;
     storage.property_get_int = memory_storage_property_get_int;
     storage.property_load = main_storage_property_load;
     storage.property_set_int = memory_storage_property_set_int;
