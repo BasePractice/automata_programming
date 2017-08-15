@@ -42,6 +42,7 @@ add_definitions(
 add_subdirectory(stages/stage2)
 add_subdirectory(stages/stage3)
 add_subdirectory(stages/stage4)
+add_subdirectory(stages/stage5)
 
 file(COPY
         ${CMAKE_SOURCE_DIR}/tests_data/conditioner_001.blob
