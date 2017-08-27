@@ -43,6 +43,7 @@ add_subdirectory(stages/stage2)
 add_subdirectory(stages/stage3)
 add_subdirectory(stages/stage4)
 add_subdirectory(stages/stage5)
+add_subdirectory(stages/turing_machine)
 
 file(COPY
         ${CMAKE_SOURCE_DIR}/tests_data/conditioner_001.blob
@@ -50,5 +51,9 @@ file(COPY
         ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/tests_data)
 file(COPY
         ${CMAKE_SOURCE_DIR}/tests_data/conditioner_main.blob
+        DESTINATION
+        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/tests_data)
+file(COPY
+        ${CMAKE_SOURCE_DIR}/tests_data/turing_machine_states
         DESTINATION
         ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/tests_data)

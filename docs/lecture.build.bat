@@ -13,12 +13,12 @@ set PATH=%PYTHON_PATH%;%PATH%
 set PATH=%PYTHON_SCRIPTS%;%PATH%
 set PATH=%CD%;%PATH%
 
-del /F /Q %CD%/lecture_Promela_SPIN.pdf
+del /F /Q %CD%/automata_programming.pdf
 del /F /Q *.lof && del /F /Q *.aux && del /F /Q *.log && del /F /Q *.toc && del /F /Q *.out && del /F /Q *.bbl && del /F /Q *.blg && del /F /Q *.dvi && del /F /Q *.vrb && del /F /Q *.snm && del /F /Q *.nav
 
-%PDFLATEX% -shell-escape lecture_Promela_SPIN.tex
-%BIBTEX% lecture_Promela_SPIN
-%PDFLATEX% -shell-escape lecture_Promela_SPIN.tex
-%PDFLATEX% -shell-escape lecture_Promela_SPIN.tex
+%PDFLATEX% -shell-escape automata_programming.tex
+%BIBTEX% automata_programming
+%PDFLATEX% -shell-escape automata_programming.tex
+%PDFLATEX% -shell-escape automata_programming.tex
 
 del /F /Q *.lof && del /F /Q *.aux && del /F /Q *.log && del /F /Q *.toc && del /F /Q *.out && del /F /Q *.bbl && del /F /Q *.blg && del /F /Q *.dvi && del /F /Q *.vrb && del /F /Q *.snm && del /F /Q *.nav
