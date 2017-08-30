@@ -1,85 +1,88 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <assert.h>
+#include <string.h>
 #include "turing_machine.h"
 
-#define MAX_LENGTH 1000
-#define STR_LENGTH 100
-#define LIMIT 5
-#define FILENAME_LENGTH 20
+static void
+char_list_new(struct CharList *list, int size) {
+    assert(list != NULL);
+    list->size = size;
+    list->list = (char *) malloc(size * sizeof(char *));
+}
 
-static char string[STR_LENGTH];
-static int head, string_length;
+static void
+char_list_set(struct CharList *list, int i, char value) {
+    assert(list != NULL);
+    assert(list->list != NULL);
+    assert(list->size > i && i >= 0);
+    list->list[i] = value;
+}
 
-void update_string(char, char);
-
-int
-machine(const char *file_name, const char *input_string) {
-    int limit, i, flag;
-    char current_state[MAX_LENGTH][LIMIT], new_state[MAX_LENGTH][LIMIT];
-    char input_symbol[MAX_LENGTH], write_symbol[MAX_LENGTH], move[MAX_LENGTH];
-    char state[LIMIT];
-    FILE *fd;
-
-    fd = fopen(file_name, "r");
-    if (fd == NULL) {
-        printf("File not found: \'%s\'\n", file_name);
-        return 1;
+static int
+char_list_find(struct CharList *list, char ch) {
+    int i;
+    for (i = 0; i < list->size; ++i) {
+        if (list->list[i] == ch)
+            return i;
     }
-    for (limit = 0; limit < MAX_LENGTH; limit++) {
-        fscanf(fd, "%s", current_state[limit]);
-        if (!strcmp(current_state[limit], "$"))
-            break;
-        fscanf(fd, " %c %c %c %s\n", &input_symbol[limit], &write_symbol[limit], &move[limit], new_state[limit]);
-    }
-    strcpy(string, input_string);
-    string_length = strlen(string);
-    head = 0;
-    strcpy(state, current_state[0]);
-    while (1) {
-        flag = 0;
-        for (i = 0; i < limit; i++) {
-            if (!strcmp(state, current_state[i]) && string[head] == input_symbol[i]) {
-                update_string(write_symbol[i], move[i]);
-                strcpy(state, new_state[i]);
-                printf("%-10s\t|  state = %s\n", string, new_state[i]);
-                if (!strcmp(state, "#"))
-                    flag = 2;
-                else
-                    flag = 1;
-                break;
-            }
-        }
-        if (flag == 0) {
-            printf("No production found for input symbol \'%c\' at state \'%s\'. Turing Machine halted!\n",
-                   string[head], state);
-            break;
-        } else if (flag == 2) {
-            printf("Accepted! Turing Machine halted!\n");
-            break;
-        }
-    }
-    return 0;
+    assert(0);
 }
 
 void
-update_string(char symbol, char move) {
-    int i;
-    string[head] = symbol;
-    if (move == 'r')
-        head++;
-    else if (move == 'l')
-        head--;
-    if (head == -1) {
-        for (i = string_length; i > 0; i--)
-            string[i] = string[i - 1];
-        string[0] = '_';
-        string_length++;
-        string[string_length] = '\0';
-        head = 0;
-    } else if (head == string_length) {
-        string[string_length] = '_';
-        string_length++;
-        string[string_length] = '\0';
+engine_init(struct Engine *engine, int symbols, int states, char init_state) {
+    int i = 0;
+    engine->references = (struct Reference **) malloc(symbols * sizeof(struct Reference *));
+    for (i = 0; i < symbols; ++i) {
+        engine->references[i] = (struct Reference *) malloc(sizeof(struct Reference) * states);
+    }
+    engine->state = init_state;
+    engine->current_i = TAPE_LIMIT / 2;
+    char_list_new(&engine->states, states);
+    char_list_new(&engine->symbols, symbols);
+    memset(engine->tape, EMPTY_SYMBOL, sizeof(engine->tape));
+}
+
+void
+engine_symbol_set(struct Engine *engine, int i, char symbol) {
+    char_list_set(&engine->symbols, i, symbol);
+}
+
+void
+engine_state_set(struct Engine *engine, int i, char state) {
+    char_list_set(&engine->states, i, state);
+}
+
+void
+engine_reference_set(struct Engine *engine,
+                     int i_symbol, int i_state,
+                     char symbol, char state, enum Direct direct) {
+    engine->references[i_symbol][i_state].symbol = symbol;
+    engine->references[i_symbol][i_state].state = state;
+    engine->references[i_symbol][i_state].direct = direct;
+}
+
+void
+engine_tape_copy(struct Engine *engine, int offset, const char *tape) {
+    memcpy(engine->tape + offset, tape, strlen(tape));
+}
+
+void
+machine(struct Engine *engine) {
+    while (1) {
+        int i = engine->current_i;
+        char tape_symbol = engine->tape[i];
+        int i_symbol = char_list_find(&engine->symbols, tape_symbol);
+        int i_state = char_list_find(&engine->states, engine->state);
+        struct Reference *ref = &(engine->references[i_symbol][i_state]);
+        engine->tape[i] = ref->symbol;
+        if (ref->state == STOP_SYMBOL)
+            break;
+        engine->state = ref->state;
+        if (ref->direct == Left) {
+            engine->current_i--;
+        } else {
+            engine->current_i++;
+        }
     }
 }
