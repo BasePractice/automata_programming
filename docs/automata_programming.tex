@@ -1295,6 +1295,7 @@ x.Field1 = 1;
   state = ON
 \}
 
+
 \end{alltt}
 
 Определено 7 состояний:
@@ -1307,6 +1308,134 @@ x.Field1 = 1;
   \item \texttt{HEATING} - Состояние охлаждения
   \item \texttt{WAITING} - Состояние ожидания
 \end{enumerate}
+
+Выделим в нашей моделе отдельный процесс для получения температуры
+
+\begin{alltt}
+\cname{mtype} = \{START, ON, OFF, CONTROL, COOLING, HEATING, WAITING,  
+                  T\_READ\_PROPERTIES, T\_READ, T\_WAIT, T\_OFF\};
+
+\cname{mtype} state = START;
+\cname{mtype} t\_state = START;
+\cname{mtype} last\_state = START;
+\cname{int} guard\_temperature = 12;
+\cname{int} current\_temperature = 0;
+\cname{int} waiting\_count = 10;
+
+\cname{ltl} temp\_equals   \{ 
+            []<> (current\_temperature == guard\_temperature) \}
+\cname{ltl} cooling       \{ 
+            <> (state == COOLING && current\_temperature > guard\_temperature) \}
+\cname{ltl} heating       \{ 
+            <> (state == HEATING && current\_temperature < guard\_temperature) \}
+\cname{ltl} off\_complete  \{ 
+            []<> ( (last\_state == WAITING) && (state == OFF) ) \}
+
+\cname{int}  t\_wait\_count = 2;
+
+\cname{proctype} termometer() {
+  printf("[Termometer \%d] Enter{\textbackslash}n", \_pid);
+  \cname{do}
+    :: (t\_state == T\_READ\_PROPERTIES) ->
+      printf("[Termometer \%d] Load properties{\textbackslash}n", \_pid);
+      t\_wait\_count = 2;
+      t\_state = T\_READ;
+    :: (t\_state == T\_OFF) ->
+      printf("[Termometer \%d] Signal off{\textbackslash}n", \_pid);
+      \cname{break};
+    :: (t\_state == T\_READ) ->
+      printf("[Termometer \%d] Read current temperature: \%d{\textbackslash}n", 
+             \_pid, current\_temperature);
+      t\_state = T\_WAIT;
+    :: (t\_state == T\_WAIT) ->                                                        
+      t\_wait\_count--;
+      \cname{if}
+        :: (t\_wait\_count <= 0) -> 
+          t\_wait\_count = 2;
+          t\_state = T\_READ;
+        :: \cname{else} ->
+          t\_state = T\_WAIT;
+      \cname{fi}
+    :: (state == OFF) ->
+      t\_state = T\_OFF;
+  \cname{od}
+  printf("[Termometer \%d] Exit{\textbackslash}n", \_pid);
+}
+
+\cname{proctype} conditioner() {
+  printf("[Conditioner \%d] Enter{\textbackslash}n", \_pid);
+  \cname{run} termometer();
+  \cname{do}
+    :: (state == OFF) ->
+      printf("[Conditioner \%d] Store temperature and properties{\textbackslash}n", \_pid);
+      t\_state == T\_OFF;
+      printf("[Conditioner \%d] Dependencies processes, wait{\textbackslash}n", \_pid);
+      \cname{break};
+    :: (state == ON) ->
+      current\_temperature = 14; 
+      t\_state = T\_READ\_PROPERTIES;
+      printf("[Conditioner \%d] Load properties{\textbackslash}n", \_pid);
+      guard\_temperature = 12;
+      printf("[Conditioner \%d] Loaded: \%dC, Current: \%dC{\textbackslash}n", 
+             \_pid, guard\_temperature, current\_temperature);
+      last\_state = state;
+      state = CONTROL;
+    :: (state == CONTROL) ->
+      printf("[Conditioner \%d] Controling{\textbackslash}n", \_pid);
+      printf("[Conditioner \%d] Current temperature: \%dC{\textbackslash}n", 
+             \_pid, current\_temperature);
+      last\_state = state;
+      \cname{if}
+        :: (current\_temperature > guard\_temperature) ->
+          state = COOLING;
+        :: (current\_temperature < guard\_temperature) ->
+          state = HEATING;
+        :: \cname{else} ->
+          state = WAITING; 
+      \cname{fi}
+    :: (state == COOLING) ->
+      assert(current\_temperature > guard\_temperature);
+      printf("[Conditioner \%d] Cooling{\textbackslash}n", \_pid);
+      current_temperature--;
+      last\_state = state;
+      state = CONTROL;
+    :: (state == HEATING) ->
+      assert(current\_temperature < guard\_temperature);
+      printf("[Conditioner \%d] Heating{\textbackslash}n", \_pid);
+      current\_temperature++;
+      last\_state = state;
+      state = CONTROL;
+    :: (state == WAITING) ->
+      assert(current\_temperature == guard\_temperature);
+      printf("[Conditioner \%d] Waiting{\textbackslash}n", \_pid);
+      last\_state = state;
+      state = CONTROL;
+      \cname{if}
+        :: (waiting\_count == 5) ->
+          printf("[Conditioner \%d] 
+                 Simulating. Downgrade temperature.{\textbackslash}n", 
+                 \_pid);
+          current\_temperature = guard\_temperature - 2; 
+          waiting\_count--;
+        :: (waiting\_count < 0) ->
+          state = OFF;
+        :: \cname{else} ->
+          waiting\_count--;
+      \cname{fi}  
+  \cname{od}
+  printf("[Conditioner \%d] Exit{\textbackslash}n", \_pid);
+}
+
+
+\cname{init} \{
+  \cname{run} conditioner();
+  \cname{assert}(state == START);
+  printf("[Init] Запуск{\textbackslash}n");
+  state = ON
+\}
+
+\end{alltt}
+
 
 \newpage
 \section*{Проект Си}\label{practical_work_3}
