@@ -1,10 +1,10 @@
-mtype = {START, ON, OFF, CONTROL, COOLING, HEATING, WAITING,  T_READ_PROPERTIES, T_READ, T_WAIT, T_OFF};
+mtype = {START, ON, OFF, CONTROL, COOLING, HEATING, WAITING,  T_INITIALIZE, T_READ, T_WAIT, T_OFF};
 
 mtype state = START;
 mtype t_state = START;
 mtype last_state = START;
 int guard_temperature = 12;
-int current_temperature = 0;
+int current_temperature = 14;
 int waiting_count = 10;
 
 /** ! not, && - and, || - or, -> - зависимость, <-> - эквивалентность */
@@ -24,7 +24,7 @@ int  t_wait_count = 2;
 proctype termometer() {
   printf("[Termometer %d] Enter\n", _pid);
   do
-    :: (t_state == T_READ_PROPERTIES) ->
+    :: (t_state == T_INITIALIZE) ->
       printf("[Termometer %d] Load properties\n", _pid);
       t_wait_count = 2;
       t_state = T_READ;
@@ -46,14 +46,22 @@ proctype termometer() {
       fi
     :: (state == OFF) ->
       t_state = T_OFF;
+    :: (state == COOLING) ->
+      current_temperature--;
+      t_state = T_READ;
+    :: (state == HEATING) ->
+      current_temperature++;
+      t_state = T_READ;
   od
   printf("[Termometer %d] Exit\n", _pid);
 }
 
 proctype conditioner() {
-  printf("[Conditioner %d] Enter\n", _pid);
+  int local_temperature = 0;
   run termometer();
+  printf("[Conditioner %d] Enter\n", _pid);
   do
+    :: last_state = state;
     :: (state == OFF) ->
       printf("[Conditioner %d] Store temperature and properties\n", _pid);
       /*Дожидаемся, что терометр завершит работу */
@@ -61,52 +69,44 @@ proctype conditioner() {
       printf("[Conditioner %d] Dependencies processes, wait\n", _pid);
       break;
     :: (state == ON) ->
-      current_temperature = 14; /** Для проверки COOLING */
-      t_state = T_READ_PROPERTIES;
+      t_state = T_INITIALIZE;
       printf("[Conditioner %d] Load properties\n", _pid);
-      guard_temperature = 12;
-      printf("[Conditioner %d] Loaded: %dC, Current: %dC\n", _pid, guard_temperature, current_temperature);
-      last_state = state;
+      printf("[Conditioner %d] Guard: %dC\n", _pid, guard_temperature);
+      t_state == T_READ;
       state = CONTROL;
     :: (state == CONTROL) ->
       printf("[Conditioner %d] Controling\n", _pid);
-      /** Получаем тепуратуру помещения */
-      printf("[Conditioner %d] Current temperature: %dC\n", _pid, current_temperature);
-      last_state = state;
+      local_temperature = current_temperature;
+      printf("[Conditioner %d] Current temperature: %dC\n", _pid, local_temperature);
       if
-        :: (current_temperature > guard_temperature) ->
+        :: (local_temperature > guard_temperature) ->
           state = COOLING;
-        :: (current_temperature < guard_temperature) ->
+        :: (local_temperature < guard_temperature) ->
           state = HEATING;
         :: else ->
           state = WAITING; 
       fi      
     :: (state == COOLING) ->
-      assert(current_temperature > guard_temperature);
+      assert(local_temperature > guard_temperature);
       printf("[Conditioner %d] Cooling\n", _pid);
-      current_temperature--;
-      last_state = state;
       state = CONTROL;
     :: (state == HEATING) ->
-      assert(current_temperature < guard_temperature);
+      assert(local_temperature < guard_temperature);
       printf("[Conditioner %d] Heating\n", _pid);
-      current_temperature++;
-      last_state = state;
       state = CONTROL;
     :: (state == WAITING) ->
-      assert(current_temperature == guard_temperature);
+      assert(local_temperature == guard_temperature);
       printf("[Conditioner %d] Waiting\n", _pid);
-      last_state = state;
       state = CONTROL;
+      waiting_count--;
       if
         :: (waiting_count == 5) ->
           printf("[Conditioner %d] Simulating. Downgrade temperature.\n", _pid);
           current_temperature = guard_temperature - 2; /** Для проверки HEATING */
-          waiting_count--;
         :: (waiting_count < 0) ->
           state = OFF;
         :: else ->
-          waiting_count--;
+          skip;
       fi  
   od
   printf("[Conditioner %d] Exit\n", _pid);
@@ -117,5 +117,5 @@ init {
   run conditioner();
   assert(state == START);
   printf("[Init] Start\n");
-  state = ON
+  state = ON;
 }

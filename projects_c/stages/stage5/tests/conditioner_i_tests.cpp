@@ -62,8 +62,8 @@ test_errors() {
 }
 
 TEST(Conditioner, BusinessFSM) {
-    struct ConditionerInter inter;
-    struct StorageInter storage;
+    struct ConditionerInter inter{};
+    struct StorageInter storage{};
 
     memset(&inter, 0, sizeof(struct ConditionerInter));
     memset(&storage, 0, sizeof(struct StorageInter));
@@ -82,8 +82,8 @@ TEST(Conditioner, BusinessFSM) {
 }
 
 TEST(Conditioner, BusinessFailed) {
-    struct ConditionerInter inter;
-    struct StorageInter storage;
+    struct ConditionerInter inter{};
+    struct StorageInter storage{};
 
     memset(&inter, 0, sizeof(struct ConditionerInter));
     memset(&storage, 0, sizeof(struct StorageInter));

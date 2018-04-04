@@ -17,6 +17,7 @@ main_storage_property_load() {
         fprintf(stdout, "Load wait cooling: %d ms\n", memory_storage_property_get_int(WaitingCooling));
         fprintf(stdout, "Load wait heating: %d ms\n", memory_storage_property_get_int(WaitingHeating));
         fprintf(stdout, "Load wait idle   : %d ms\n", memory_storage_property_get_int(WaitingIdle));
+        fflush(stdout);
         return 1;
     }
     return 0;
@@ -43,6 +44,7 @@ product_process_engine(enum EngineMode mode, int timeout) {
             "Cooling", "Heating", "Waiting"
     };
     fprintf(stdout, "[Engine] Mode: %s\n", text_mode[mode]);
+    fflush(stdout);
     x_sleep(timeout);
     return ERR_OK;
 }
@@ -53,6 +55,7 @@ product_control(int state) {
     enum State state_ext;
 
     fprintf(stdout, "[Control] Read signal from %s file.\n", ct_file_name);
+    fflush(stdout);
     state_ext = external_controller_read(ct_file_name, &ok);
     if (ok)
         return state_ext;

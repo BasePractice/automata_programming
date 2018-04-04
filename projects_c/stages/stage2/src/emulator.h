@@ -9,13 +9,13 @@ extern "C" {
 int
 memory_storage_property_load();
 int
-memory_storage_property_load_from_memory(const unsigned char *const block, int block_size);
+memory_storage_property_load_from_memory(const unsigned char *block, int block_size);
 int
-memory_storage_property_load_from_file(const char *const file_name);
+memory_storage_property_load_from_file(const char *file_name);
 int
 memory_storage_property_store();
 int
-memory_storage_property_store_to_file(const char *const file_name);
+memory_storage_property_store_to_file(const char *file_name);
 int
 memory_storage_property_get_int(enum Property key);
 void

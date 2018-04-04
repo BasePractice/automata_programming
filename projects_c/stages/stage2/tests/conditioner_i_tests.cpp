@@ -49,8 +49,8 @@ test_is_running(int state) {
 }
 
 TEST(Conditioner, BusinessFSM) {
-    struct ConditionerInter inter;
-    struct StorageInter storage;
+    struct ConditionerInter inter{};
+    struct StorageInter storage{};
 
     memset(&inter, 0, sizeof(struct ConditionerInter));
     memset(&storage, 0, sizeof(struct StorageInter));
