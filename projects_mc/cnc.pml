@@ -1,5 +1,5 @@
 mtype = {POWER, ON, OFF, WAIT, CONTROL, X_PLUS, X_MINUS, Y_PLUS, Y_MINUS, Z_PLUS, Z_MINUS, CRITICAL};
-chan command = [10] of { mtype };
+chan command = [0] of { mtype };
 mtype state = POWER;
 mtype last_state = POWER;
 
@@ -65,8 +65,7 @@ active proctype cnc() {
     :: state == WAIT ->
       state = CONTROL;
     :: state == CONTROL ->
-      state = WAIT;
-      command ? [state] -> command ? state;
+      command ? state;
     :: state == CRITICAL ->
       printf("Critical when %e\n", last_state);
       state = OFF;
