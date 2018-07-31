@@ -12,6 +12,7 @@ ltl when_x_plus   { <>(state == X_PLUS)   }
 active proctype generator() {
   command ! ON;
   command ! X_PLUS;
+  command ! X_MINUS;
   command ! X_PLUS;
   command ! X_PLUS;
   command ! WAIT;
@@ -61,6 +62,17 @@ active proctype cnc() {
         :: else ->
           /*Move*/
           coord.x = coord.x + 1;
+      fi
+    :: state == X_MINUS ->
+      last_state = state;
+      state = CONTROL;
+      if
+        :: coord.x - 1 < 0 ->
+          coord.x = 0;
+          state = CRITICAL;
+        :: else ->
+          /*Move*/
+          coord.x = coord.x - 1;
       fi
     :: state == WAIT ->
       state = CONTROL;
