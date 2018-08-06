@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include <turing_machine.h>
 
-
 /*
  States : A, B
  Symbols: 0, 1, E, $
@@ -29,13 +28,15 @@ TEST(TuringMachine, Change_0_To_1_To_0) {
     engine_reference_add(engine, '1', 'B', '0', 'B', Right);
     engine_reference_add(engine, EMPTY_SYMBOL, 'B', EMPTY_SYMBOL, STOP_STATE, Right);
 
+#define TEXT "110010"
     int offset = (TAPE_LIMIT / 2) + 2;
-    engine_tape_copy(engine, offset, "110010");
+    engine_tape_copy(engine, offset, TEXT);
     machine(engine);
-    engine_tape_set(engine, offset + 6, (char) 0);
+    engine_tape_set(engine, offset + (int)strlen(TEXT), (char) 0);
     ASSERT_STREQ(engine_type_get(engine, offset), "001101");
     engine_destroy(&engine);
     ASSERT_TRUE(engine == nullptr);
+#undef TEXT
 }
 
 /*
@@ -87,11 +88,13 @@ TEST(TuringMachine, Sorting_A_B_Blocks) {
     engine_reference_add(engine, 'b', 'K', 'a', 'B', Stay);
 
     int offset = (TAPE_LIMIT / 2) + 2;
-    engine_tape_copy(engine, offset, "ababbaaab");
+#define TEXT "ababbaaab"
+    engine_tape_copy(engine, offset, TEXT);
     engine_offset_set(engine, offset);
     machine(engine);
-    engine_tape_set(engine, offset + 9, (char) 0);
+    engine_tape_set(engine, offset + (int)strlen(TEXT), (char) 0);
     ASSERT_STREQ(engine_type_get(engine, offset), "aaaaabbbb");
     engine_destroy(&engine);
     ASSERT_TRUE(engine == nullptr);
+#undef TEXT
 }
