@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.2.1)
-project(02.Turing_Machine)
+project(03.Turing_Machine)
 
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
