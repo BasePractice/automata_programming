@@ -1,4 +1,5 @@
-#include <gtest/gtest.h>
+#include <cstring>
+#include <catch2/catch.hpp>
 #include <turing_machine.h>
 
 /*
@@ -10,7 +11,7 @@
   B     1(B)->R    0(B)->R     E($)->R
  */
 
-TEST(TuringMachine, Change_0_To_1_To_0) {
+TEST_CASE("Замена 0 на 1, 1 на 0", "[02.Turing_Machine]") {
     auto engine = engine_create(3, 2, 'A');
 
     engine_symbol_add(engine, '0');
@@ -33,9 +34,9 @@ TEST(TuringMachine, Change_0_To_1_To_0) {
     engine_tape_copy(engine, offset, TEXT);
     machine(engine);
     engine_tape_set(engine, offset + (int)strlen(TEXT), (char) 0);
-    ASSERT_STREQ(engine_type_get(engine, offset), "001101");
+    REQUIRE(strcmp(engine_type_get(engine, offset), "001101") == 0);
     engine_destroy(&engine);
-    ASSERT_TRUE(engine == nullptr);
+    REQUIRE(engine == nullptr);
 #undef TEXT
 }
 
@@ -56,7 +57,7 @@ TEST(TuringMachine, Change_0_To_1_To_0) {
   K
  */
 
-TEST(TuringMachine, Sorting_A_B_Blocks) {
+TEST_CASE("Упорядочивание символов", "[02.Turing_Machine]") {
     auto engine = engine_create(3, 5, 'A');
 
     engine_symbol_add(engine, 'a');
@@ -93,8 +94,8 @@ TEST(TuringMachine, Sorting_A_B_Blocks) {
     engine_offset_set(engine, offset);
     machine(engine);
     engine_tape_set(engine, offset + (int)strlen(TEXT), (char) 0);
-    ASSERT_STREQ(engine_type_get(engine, offset), "aaaaabbbb");
+    REQUIRE(strcmp(engine_type_get(engine, offset), "aaaaabbbb") == 0);
     engine_destroy(&engine);
-    ASSERT_TRUE(engine == nullptr);
+    REQUIRE(engine == nullptr);
 #undef TEXT
 }

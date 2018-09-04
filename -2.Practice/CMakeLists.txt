@@ -31,4 +31,7 @@ endif ()
 
 include_directories(00.Base)
 
-add_subdirectory(01.Turing_Machine)
+add_subdirectory(02.Turing_Machine)
+
+add_library(tests_main STATIC 00.Base/catch2/catch.hpp 00.Base/tests_main.cpp)
+
