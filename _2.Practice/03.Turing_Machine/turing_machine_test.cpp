@@ -11,7 +11,7 @@
   B     1(B)->R    0(B)->R     E($)->R
  */
 
-TEST_CASE("Замена 0 на 1, 1 на 0", "[02.Turing_Machine]") {
+TEST_CASE("Замена 0 на 1, 1 на 0", "[03.Turing_Machine]") {
     auto engine = engine_create(3, 2, 'A');
 
     engine_symbol_add(engine, '0');
@@ -57,7 +57,7 @@ TEST_CASE("Замена 0 на 1, 1 на 0", "[02.Turing_Machine]") {
   K
  */
 
-TEST_CASE("Упорядочивание символов", "[02.Turing_Machine]") {
+TEST_CASE("Упорядочивание символов", "[03.Turing_Machine]") {
     auto engine = engine_create(3, 5, 'A');
 
     engine_symbol_add(engine, 'a');
