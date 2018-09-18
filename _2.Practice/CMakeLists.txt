@@ -32,6 +32,7 @@ endif ()
 include_directories(00.Base)
 
 add_subdirectory(03.Turing_Machine)
+add_subdirectory(04.Regular_Expression)
 
 add_library(tests_main STATIC 00.Base/catch2/catch.hpp 00.Base/tests_main.cpp)
 
