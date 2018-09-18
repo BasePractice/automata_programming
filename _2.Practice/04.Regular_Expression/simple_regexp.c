@@ -1,8 +1,8 @@
 ﻿#include <string.h>
 #include "simple_regexp.h"
 
-enum OneZeroKleene_State {
-    OZK_ONE, OZK_ZERO, OZK_EMPTY
+enum OneZeroPlus_State {
+    OZP_ONE, OZP_ZERO, OZP_EMPTY
 };
 
 enum XYZ_State {
@@ -31,30 +31,30 @@ static int iterator_next(struct Iterator *it) {
     return ch;
 }
 
-static bool one_zero_kleene(const char *text) {
+static bool one_zero_plus(const char *text) {
     struct Iterator it;
     int ch;
-    enum OneZeroKleene_State state = OZK_EMPTY;
+    enum OneZeroPlus_State state = OZP_EMPTY;
 
     iterator_init(&it, text);
     do {
         ch = iterator_next(&it);
         switch (state) {
-            case OZK_EMPTY: {
+            case OZP_EMPTY: {
                 if (ch == '1') {
-                    state = OZK_ONE;
+                    state = OZP_ONE;
                     break;
                 }
                 return false;
             }
-            case OZK_ONE: {
+            case OZP_ONE: {
                 if (ch == '0') {
-                    state = OZK_ZERO;
+                    state = OZP_ZERO;
                     break;
                 }
                 return false;
             }
-            case OZK_ZERO: {
+            case OZP_ZERO: {
                 if (ch == '0') {
                     break;
                 } else if (ch == -1) {
@@ -116,8 +116,8 @@ static bool xyz(const char *text) {
 
 bool match(enum Type type, const char *text) {
     switch (type) {
-        case ONE_ZERO_KLEENE:
-            return one_zero_kleene(text);
+        case ONE_ZERO_PLUS:
+            return one_zero_plus(text);
         case XYZ:
             return xyz(text);
         default:

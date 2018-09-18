@@ -9,7 +9,7 @@ extern "C" {
 #endif
 
 enum Type {
-    ONE_ZERO_KLEENE, XYZ
+    ONE_ZERO_PLUS, XYZ
 };
 
 bool match(enum Type type, const char *text);

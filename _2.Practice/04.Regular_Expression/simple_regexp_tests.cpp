@@ -4,27 +4,21 @@
 
 TEST_CASE("10+", "[04.Regular_Expression]") {
     SECTION("Совпадает") {
-        REQUIRE(match(ONE_ZERO_KLEENE, "10"));
-        REQUIRE(match(ONE_ZERO_KLEENE, "100"));
-        REQUIRE(match(ONE_ZERO_KLEENE, "1000"));
-        REQUIRE(match(ONE_ZERO_KLEENE, "10000"));
-        REQUIRE(match(ONE_ZERO_KLEENE, "100000"));
-        REQUIRE(match(ONE_ZERO_KLEENE, "1000000"));
-        REQUIRE(match(ONE_ZERO_KLEENE, "10000000"));
-        REQUIRE(match(ONE_ZERO_KLEENE, "100000000"));
-        REQUIRE(match(ONE_ZERO_KLEENE, "1000000000"));
-        REQUIRE(match(ONE_ZERO_KLEENE, "10000000000"));
+        REQUIRE(match(ONE_ZERO_PLUS, "10"));
+        REQUIRE(match(ONE_ZERO_PLUS, "100"));
+        REQUIRE(match(ONE_ZERO_PLUS, "1000"));
+        REQUIRE(match(ONE_ZERO_PLUS, "10000"));
     }
     SECTION("Не совпадает") {
-        REQUIRE(!match(ONE_ZERO_KLEENE, ""));
-        REQUIRE(!match(ONE_ZERO_KLEENE, "1"));
-        REQUIRE(!match(ONE_ZERO_KLEENE, "11"));
-        REQUIRE(!match(ONE_ZERO_KLEENE, "110"));
-        REQUIRE(!match(ONE_ZERO_KLEENE, "0"));
-        REQUIRE(!match(ONE_ZERO_KLEENE, "1011"));
-        REQUIRE(!match(ONE_ZERO_KLEENE, "100011"));
-        REQUIRE(!match(ONE_ZERO_KLEENE, "000"));
-        REQUIRE(!match(ONE_ZERO_KLEENE, "010"));
+        REQUIRE_FALSE(match(ONE_ZERO_PLUS, ""));
+        REQUIRE_FALSE(match(ONE_ZERO_PLUS, "1"));
+        REQUIRE_FALSE(match(ONE_ZERO_PLUS, "11"));
+        REQUIRE_FALSE(match(ONE_ZERO_PLUS, "110"));
+        REQUIRE_FALSE(match(ONE_ZERO_PLUS, "0"));
+        REQUIRE_FALSE(match(ONE_ZERO_PLUS, "1011"));
+        REQUIRE_FALSE(match(ONE_ZERO_PLUS, "100011"));
+        REQUIRE_FALSE(match(ONE_ZERO_PLUS, "000"));
+        REQUIRE_FALSE(match(ONE_ZERO_PLUS, "010"));
     }
 }
 
