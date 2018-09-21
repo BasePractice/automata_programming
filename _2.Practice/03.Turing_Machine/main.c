@@ -2,6 +2,19 @@
 #include <stdio.h>
 #include "turing_machine.h"
 
+void print_type(struct Engine *engine) {
+	int i;
+
+	for (i = 0; i < TAPE_LIMIT; ++i) {
+		int ch = *(engine_type_get(engine, i));
+		if (ch == EMPTY_SYMBOL)
+			continue;
+		fprintf(stdout, "%c", (char)ch);
+	}
+	fprintf(stdout, "\n");
+	fflush(stdout);
+}
+
 int
 main(int argc, char *argv[]) {
 	struct Engine * engine = engine_create(3, 2, 'A');
@@ -24,10 +37,9 @@ main(int argc, char *argv[]) {
 #define TEXT "110010"
 	int offset = (TAPE_LIMIT / 2) + 2;
 	engine_tape_copy(engine, offset, TEXT);
-	fprintf(stdout, "%s\n", engine_type_get(engine, offset));
+	print_type(engine);
 	machine(engine);
-	engine_tape_set(engine, offset + (int)strlen(TEXT), (char)0);
-	fprintf(stdout, "%s\n", engine_type_get(engine, offset));
+	print_type(engine);
 	engine_destroy(&engine);
 #undef TEXT
     system("pause");
