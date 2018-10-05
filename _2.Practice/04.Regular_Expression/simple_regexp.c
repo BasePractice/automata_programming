@@ -2,11 +2,11 @@
 #include "simple_regexp.h"
 
 enum OneZeroPlus_State {
-    OZP_ONE, OZP_ZERO, OZP_EMPTY
+    OZP_ONE, OZP_ZERO, OZP_START
 };
 
 enum XYZ_State {
-    XYZ_EMPTY, XYZ_Z, XYZ_X, XYZ_Y
+    XYZ_START, XYZ_Z, XYZ_X, XYZ_Y
 };
 
 struct Iterator {
@@ -34,13 +34,13 @@ static int iterator_next(struct Iterator *it) {
 static bool one_zero_plus(const char *text) {
     struct Iterator it;
     int ch;
-    enum OneZeroPlus_State state = OZP_EMPTY;
+    enum OneZeroPlus_State state = OZP_START;
 
     iterator_init(&it, text);
     do {
         ch = iterator_next(&it);
         switch (state) {
-            case OZP_EMPTY: {
+            case OZP_START: {
                 if (ch == '1') {
                     state = OZP_ONE;
                     break;
@@ -71,13 +71,13 @@ static bool one_zero_plus(const char *text) {
 static bool xyz(const char *text) {
     struct Iterator it;
     int ch;
-    enum XYZ_State state = XYZ_EMPTY;
+    enum XYZ_State state = XYZ_START;
 
     iterator_init(&it, text);
     do {
         ch = iterator_next(&it);
         switch (state) {
-            case XYZ_EMPTY: {
+            case XYZ_START: {
                 if (ch == 'z') {
                     state = XYZ_Z;
                     break;
@@ -114,11 +114,15 @@ static bool xyz(const char *text) {
     return true;
 }
 
+
+
 bool match(enum Type type, const char *text) {
     switch (type) {
         case ONE_ZERO_PLUS:
             return one_zero_plus(text);
         case XYZ:
+            return xyz(text);
+        case OTHER:
             return xyz(text);
         default:
             return false;
