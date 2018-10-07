@@ -4,8 +4,6 @@ project(04.Regular_Expression)
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(.)
-
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(src)
 
 set(HEADER_FILES simple_regexp.h)

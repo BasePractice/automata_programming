@@ -4,8 +4,6 @@ project(03.Turing_Machine)
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(.)
-
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(src)
 
 set(HEADER_FILES turing_machine.h)
