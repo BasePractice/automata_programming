@@ -35,6 +35,22 @@ TEST_CASE("Разбор", "[05.Lexical_Analyze]") {
         REQUIRE(ctx == 0);
     }
 
+    SECTION("2 ^ 6") {
+        struct LexerContext *ctx = nullptr;
+        struct LexerToken token{};
+        REQUIRE(lexer_init_string(&ctx, " 2 ^ 6"));
+        REQUIRE(lexer_next(ctx, &token));
+        REQUIRE(token.type == TokenInt);
+        REQUIRE(lexer_next(ctx, &token));
+        REQUIRE(token.type == TokenPol);
+        REQUIRE(lexer_next(ctx, &token));
+        REQUIRE(token.type == TokenInt);
+        REQUIRE_FALSE(lexer_next(ctx, &token));
+        REQUIRE(token.type == End);
+        lexer_destroy(&ctx);
+        REQUIRE(ctx == 0);
+    }
+
     SECTION("()") {
         struct LexerContext *ctx = nullptr;
         struct LexerToken token{};

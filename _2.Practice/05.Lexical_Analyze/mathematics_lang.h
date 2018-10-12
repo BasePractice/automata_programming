@@ -18,6 +18,7 @@ enum LexerTokenType {
     TokenInt, TokenReal,
     TokenId,
     TokenDiv, TokenMul, TokenMinus, TokenPlus,
+    TokenPol,
     End
 };
 

@@ -98,6 +98,10 @@ inline static bool lexer_symbol_is_plus(struct LexerContext *ctx) {
     return lexer_symbol_is(ctx, '+');
 }
 
+inline static bool lexer_symbol_is_pol(struct LexerContext *ctx) {
+    return lexer_symbol_is(ctx, '^');
+}
+
 inline static bool lexer_symbol_is_minus(struct LexerContext *ctx) {
     return lexer_symbol_is(ctx, '-');
 }
@@ -127,7 +131,7 @@ inline static bool lexer_symbol_parse_numeric(struct LexerContext *ctx, struct L
     tok->p = ctx->content + ctx->it;
     tok->it_start = ctx->it;
     tok->type = TokenInt;
-    while (lexer_symbol_next(ctx)) {
+    while (lexer_symbol_next(ctx) && !lexer_eof(ctx)) {
         if (lexer_symbol_is_digit(ctx))
             continue;
         if (lexer_symbol_is_dot(ctx)) {
@@ -150,7 +154,7 @@ inline static bool lexer_symbol_parse_id(struct LexerContext *ctx, struct LexerT
     tok->type = TokenId;
     tok->p = ctx->content + ctx->it;
     tok->it_start = ctx->it;
-    while (lexer_symbol_next(ctx)) {
+    while (lexer_symbol_next(ctx) && !lexer_eof(ctx)) {
         if (lexer_symbol_is_alpha(ctx))
             continue;
         if (lexer_symbol_is_digit(ctx))
@@ -171,7 +175,7 @@ inline static bool lexer_symbol_skip(struct LexerContext *ctx) {
         }
         lexer_symbol_next(ctx);
     }
-    return true;
+    return !lexer_eof(ctx);
 }
 
 bool lexer_eof(struct LexerContext *ctx) {
@@ -187,7 +191,8 @@ bool lexer_next(struct LexerContext *ctx, struct LexerToken *token) {
     token->type = End;
     if (lexer_eof(ctx))
         return false;
-    lexer_symbol_skip(ctx);
+    if (!lexer_symbol_skip(ctx))
+        return false;
     token->p = ctx->content + ctx->it;
     token->it_start = ctx->it;
     token->it_end = ctx->it;
@@ -219,6 +224,10 @@ bool lexer_next(struct LexerContext *ctx, struct LexerToken *token) {
         return true;
     } else if (lexer_symbol_is_rpar(ctx)) {
         token->type = TokenMul;
+        lexer_symbol_next(ctx);
+        return true;
+    } else if (lexer_symbol_is_pol(ctx)) {
+        token->type = TokenPol;
         lexer_symbol_next(ctx);
         return true;
     } else if (lexer_symbol_is_digit(ctx)) {
