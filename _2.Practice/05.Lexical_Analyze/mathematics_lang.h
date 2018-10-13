@@ -9,23 +9,16 @@ extern "C" {
 #endif
 
 /*
-
- exp = '(' exp ')' | term
- term = factor | exp '+' exp
- factor = func | exp '*' exp
- func = id '(' exp ')' | num
- digit = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
- num = digit '.'? digit*
- id  = 'A' | ... 'Z'  | 'a' | ... 'z'
- ws = ' ' | '\t' | '\r' | '\n'
-
- */
+ Добавить знак возведения в степень, ^
+ Добавить разбор числа со знаком (+10, -4,  5 * 7 - tg(0) - -30   )
+ * */
 
 enum LexerTokenType {
     TokenLPar, TokenRPar,
     TokenInt, TokenReal,
     TokenId,
     TokenDiv, TokenMul, TokenMinus, TokenPlus,
+    TokenPol,
     End
 };
 
