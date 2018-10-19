@@ -124,14 +124,14 @@ TEST_CASE("Разбор", "[05.Lexical_Analyze]") {
         REQUIRE(lexer_init_file(&ctx, "__lexer_source.txt"));
         REQUIRE(lexer_next(ctx, &token));
         REQUIRE(token.type == TokenInt);
-        REQUIRE(strncmp("5", token.p, token.it_end - token.it_start) == 0);
+        REQUIRE('5' == *token.p);
 
         REQUIRE(lexer_next(ctx, &token));
         REQUIRE(token.type == TokenMul);
 
         REQUIRE(lexer_next(ctx, &token));
         REQUIRE(token.type == TokenInt);
-        REQUIRE(strncmp("7", token.p, token.it_end - token.it_start) == 0);
+        REQUIRE('7' == *token.p);
 
         REQUIRE(lexer_next(ctx, &token));
         REQUIRE(token.type == TokenPlus);
