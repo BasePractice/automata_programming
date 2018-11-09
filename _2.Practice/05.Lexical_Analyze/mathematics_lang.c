@@ -69,6 +69,11 @@ inline static char lexer_symbol(struct LexerContext *ctx) {
     return ctx->content[ctx->it];
 }
 
+inline static char lexer_symbol_peek(struct LexerContext *ctx) {
+    assert(ctx->it < ctx->content_size);
+    return ctx->content[ctx->it];
+}
+
 inline static bool lexer_symbol_is(struct LexerContext *ctx, char original) {
     return lexer_symbol(ctx) == original;
 }
