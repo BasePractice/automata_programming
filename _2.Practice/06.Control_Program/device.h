@@ -7,6 +7,15 @@ extern "C" {
 
 enum Device {
     DEVICE_POWER_OFF,
+    DEVICE_CATCH_LINE, //Захват конвейера
+    DEVICE_FREE_LINE, //Захват конвейера
+    DEVICE_POINT_POSITION,
+
+    DEVICE_WELDING_UP, DEVICE_WELDING_DOWN,
+    DEVICE_WELDING_LEFT, DEVICE_WELDING_RIGHT,
+    DEVICE_WELDING_NOP, DEVICE_WELDING /* Сварка  */,
+
+    DEVICE_DROP_OBJECT,
 
     MT1, /* Включение ШД для конвейера  */
 
@@ -14,12 +23,11 @@ enum Device {
     MT3, /* Шаг направо  */
     MT4, /* Шаг вверх  */
     MT5, /* Шаг вниз  */
-
-    C1, /* Сварка  */
 };
 
 struct DeviceInterface {
     void (*do_step)(enum Device device);
+    void (*print)(char *text);
 };
 
 void emulator_device_init(struct DeviceInterface *di);

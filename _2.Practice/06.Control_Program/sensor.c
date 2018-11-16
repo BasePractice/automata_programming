@@ -1,8 +1,15 @@
 #include <stdio.h>
 #include "sensor.h"
 
-static int get_value(enum Sensor sensor) {
-    return 1;
+
+static int sensor[LAST_SENSOR] = {0, 1};
+
+static void simulate_update() {
+    /** */
+}
+
+static int get_value(enum Sensor id) {
+    return sensor[id];
 }
 
 static char *get_name(enum Sensor sensor) {
@@ -28,4 +35,5 @@ void
 emulator_sensor_init(struct SensorInterface *si) {
     si->get_name = get_name;
     si->get_value = get_value;
+    si->simulate_update = simulate_update;
 }

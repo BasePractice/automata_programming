@@ -10,6 +10,7 @@ extern "C" {
 /** Дискретные значения не нулевые */
 enum Sensor {
     SENSOR_POWER_OFF, /* Тумблер вкл/выкл */
+    SENSOR_POINT_PRESENT, /* Тумблер вкл/выкл */
 
     SENSOR_D1, /* Начало изделия на конвейере*/
     SENSOR_D2, /* Окончание изделия на конвейфере */
@@ -22,7 +23,8 @@ enum Sensor {
     SENSOR_M3, /* Концевой положение сверху */
     SENSOR_M4, /* Концевой положения снизу */
 
-    SENSOR_S1  /* Датчик положение шага сварки */
+    SENSOR_S1,  /* Датчик положение шага сварки */
+    LAST_SENSOR
 };
 
 struct SensorInterface {
@@ -30,6 +32,8 @@ struct SensorInterface {
     int (*get_value)(enum Sensor sensor);
 
     char *(*get_name)(enum Sensor sensor);
+
+    void (*simulate_update)();
 };
 
 void emulator_sensor_init(struct SensorInterface *);

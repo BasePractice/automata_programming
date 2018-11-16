@@ -6,7 +6,7 @@ extern "C" {
 #endif
 
 enum Property {
-    VerticalSteps, /* Количество шагов сварки от левой крайней точки до правой крайней точки */
+    VerticalStepsCenter, /* Количество шагов сварки от левой крайней точки до правой крайней точки */
 
     VerticalStepsPoint1,
     VerticalStepsPoint2,
