@@ -200,7 +200,8 @@ void engine_execute(
                 state = ENGINE_MOVE_WELDING_DEVICE;
                 if (sensor_m4 == false && sensor_m3 == true) {
                     is_up = true;
-                } else if (is_up == true &&
+                }
+                if (is_up == true &&
                            sensor_m1 == true && sensor_m2 == false) {
                     state = next_position_state;
                 }

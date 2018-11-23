@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdbool.h>
+#include <memory.h>
 #include "sensor.h"
 
 #if defined(_WIN32)
@@ -36,10 +38,13 @@ struct EmulateRegisters {
     pthread_mutex_t access;
     pthread_t server_thread;
 #endif
+#elif defined(FILE_EMULATE)
+    FILE *fd;
 #endif
     bool running;
     bool started;
-} emulator = {.started = false, .running = true};
+    size_t current_step;
+} emulator = {.started = false, .running = true, .current_step = 0};
 
 #if defined(NETWORK_EMULATE)
 
@@ -91,8 +96,36 @@ void *network_server_thread(void *parameter) {
 #endif
     return 0;
 }
+#elif defined(FILE_EMULATE)
+static void update_file_registers(struct EmulateRegisters *em) {
+    if (em->fd != 0) {
 
+        if (feof(em->fd)) {
+            fclose(em->fd);
+            em->fd = 0;
+            return;
+        }
+
+        fscanf(em->fd, "%d %d %d %d %d %d %d %d %d %d %d %d %d",
+               &registers[SENSOR_POWER_OFF],
+               &registers[SENSOR_POINT_PRESENT],
+               &registers[SENSOR_D1],
+               &registers[SENSOR_D2],
+               &registers[SENSOR_D3],
+               &registers[SENSOR_D4],
+               &registers[SENSOR_D5],
+               &registers[SENSOR_M1],
+               &registers[SENSOR_M2],
+               &registers[SENSOR_M3],
+               &registers[SENSOR_M4],
+               &registers[SENSOR_S1],
+               &registers[LAST_SENSOR]);
+        memcpy(&sensor, &registers, sizeof(sensor));
+        step_timeout = (unsigned int) registers[LAST_SENSOR];
+    }
+}
 #endif
+
 
 
 static void simulate_update() {
@@ -109,15 +142,22 @@ static void simulate_update() {
             pthread_detach(emulator.server_thread);
         }
 #endif
+#elif defined(FILE_EMULATE)
+        emulator.fd = fopen("registers.txt", "r");
+#endif
         emulator.started = true;
         emulator.running = true;
-#endif
     }
 
     if (step_timeout > 0) {
-        fprintf(stdout, "Simulate step waiting %d ms\n", step_timeout);
+        fprintf(stdout, "[%05lu] Simulate step waiting %d ms\n", emulator.current_step, step_timeout);
         ms_sleep(step_timeout);
     }
+
+#if defined(FILE_EMULATE)
+    update_file_registers(&emulator);
+#endif
+    ++emulator.current_step;
 }
 
 static int get_value(enum Sensor id) {

@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.2.1)
 project(06.Control_Program)
 
 
-option(ENABLE_NETWORK_EMULATE "Эмуляция показания датчиков по сети" ON)
+option(ENABLE_NETWORK_EMULATE "Эмуляция показания датчиков по сети" OFF)
+option(ENABLE_FILE_EMULATE "Эмуляция показания датчиков через файл" OFF)
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(.)
@@ -27,6 +28,9 @@ if (ENABLE_NETWORK_EMULATE)
 
     add_executable(${PROJECT_NAME}_emulate_network_cli emulate_network_cli.c)
     target_link_libraries(${PROJECT_NAME}_emulate_network_cli ${EMULATE_LIBRARIES})
+    file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/tests/registers.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+elseif(ENABLE_FILE_EMULATE)
+    add_definitions(-DFILE_EMULATE)
     file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/tests/registers.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 endif ()
 

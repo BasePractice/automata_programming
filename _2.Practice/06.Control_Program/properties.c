@@ -3,7 +3,7 @@
 static int get_integer(enum Property p) {
     switch (p) {
         case VerticalStepsCenter:
-            return 30;
+            return 10;
         case VerticalStepsPoint1:
             return 3;
         case VerticalStepsPoint2:
