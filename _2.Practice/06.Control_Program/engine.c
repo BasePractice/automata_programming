@@ -182,7 +182,7 @@ void engine_execute(
                 sensor_m4 = (bool) (*si->get_value)(SENSOR_M4);
                 sensor_m3 = (bool) (*si->get_value)(SENSOR_M3);
                 if (sensor_m4 == false && sensor_m3 == true) {
-                    next_move_state = ENGINE_FIND_NEXT_POINT;
+                    next_position_state = ENGINE_FIND_NEXT_POINT;
                     state = ENGINE_START_POSITION;
                     is_up = false;
                 }
