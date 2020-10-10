@@ -1,0 +1,24 @@
+digraph p_P {
+size="8,10";
+  GT [shape=box,style=dotted,label="P"];
+  GT -> S2;
+	S2 -> S2  [color=black,style=bold,label="b = !(b)"];
+}
+digraph claim_f1 {
+size="8,10";
+  GT [shape=box,style=dotted,label="f1"];
+  GT -> S5;
+	S5 -> S10  [color=black,style=bold,label="(!(b))"];
+	S5 -> S5  [color=black,style=bold,label="(1)"];
+	S10 -> S10  [color=black,style=bold,label="(!(b))"];
+  S10 [color=red,style=bold];
+}
+digraph claim_f2 {
+size="8,10";
+  GT [shape=box,style=dotted,label="f2"];
+  GT -> S5;
+	S5 -> S10  [color=black,style=bold,label="(!(b))"];
+	S5 -> S5  [color=black,style=bold,label="(1)"];
+	S10 -> S5  [color=black,style=solid,label="(1)"];
+  S10 [color=red,style=bold];
+}

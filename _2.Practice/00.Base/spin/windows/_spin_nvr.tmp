@@ -1,0 +1,22 @@
+never f1 {    /* !([] (<> (b))) */
+T0_init:
+	do
+	:: (! ((b))) -> goto accept_S4
+	:: (1) -> goto T0_init
+	od;
+accept_S4:
+	do
+	:: (! ((b))) -> goto accept_S4
+	od;
+}
+never f2 {    /* !(<> ([] (b))) */
+T0_init:
+	do
+	:: (! ((b))) -> goto accept_S9
+	:: (1) -> goto T0_init
+	od;
+accept_S9:
+	do
+	:: (1) -> goto T0_init
+	od;
+}

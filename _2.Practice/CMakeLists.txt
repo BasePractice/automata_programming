@@ -36,6 +36,7 @@ add_subdirectory(04.Regular_Expression)
 add_subdirectory(05.Lexical_Analyze)
 add_subdirectory(06.Control_Program)
 add_subdirectory(08.Simple_Program)
+add_subdirectory(09.FSM_SimInTech_Program)
 
 add_library(tests_main STATIC 00.Base/catch2/catch.hpp 00.Base/tests_main.cpp)
 
