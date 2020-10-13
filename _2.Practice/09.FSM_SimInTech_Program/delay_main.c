@@ -9,7 +9,7 @@ int main(int argc, char **argv) {
     char  *sequence;
     size_t sequence_len;
     size_t sequence_it;
-    struct DelayEngine engine = {0};
+    struct DelayEngine engine = {DEFAULT_DELAY_STATE};
 
     if (argc < 2) {
         fprintf(stderr, "Передайте в качестве аргумента последовательность 0 и 1 для проверки работы элемента \"Задержка\"\n");
