@@ -3,7 +3,7 @@
 #include "delay_fsm.h"
 
 TEST_CASE("Задержка", "[05.Lexical_Analyze]") {
-    struct DelayEngine engine = {};
+    struct InsertingEngine engine = {};
 
     SECTION("Инициализация.") {
         REQUIRE_FALSE(delay_init(nullptr));

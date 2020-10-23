@@ -9,7 +9,7 @@ int main(int argc, char **argv) {
     char  *sequence;
     size_t sequence_len;
     size_t sequence_it;
-    struct DelayEngine engine = {DEFAULT_DELAY_STATE};
+    struct InsertingEngine engine = {DEFAULT_DELAY_STATE};
 
     if (argc < 2) {
         fprintf(stderr, "Передайте в качестве аргумента последовательность 0 и 1 для проверки работы элемента \"Задержка\"\n");
@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
     for (sequence_it = 0; sequence_it < sequence_len; ++sequence_it) {
         char it = sequence[sequence_it];
         enum DelayInputSymbol  symbol;
-        enum DelayOutputSymbol output;
+        enum InsertingEvent output;
         if (it != '1' && it != '0') {
             fprintf(stderr, "\nСимвол %c недопустим\n", it);
             return EXIT_FAILURE;

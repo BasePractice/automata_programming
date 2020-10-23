@@ -1,6 +1,6 @@
 #include "delay_fsm.h"
 
-enum DelayOutputSymbol delay_engine(struct DelayEngine *engine, enum DelayInputSymbol symbol) {
+enum InsertingEvent delay_engine(struct InsertingEngine *engine, enum DelayInputSymbol symbol) {
     switch (engine->state) {
         case DELAY_STATE_ZERO: {
             if (DELAY_INPUT_ONE == symbol) {
@@ -24,14 +24,14 @@ enum DelayOutputSymbol delay_engine(struct DelayEngine *engine, enum DelayInputS
     return DELAY_OUTPUT_ZERO;
 }
 
-bool delay_init(struct DelayEngine *engine) {
+bool delay_init(struct InsertingEngine *engine) {
     if (0 == engine)
         return false;
     engine->state = DEFAULT_DELAY_STATE;
     return true;
 }
 
-bool delay_reset(struct DelayEngine *engine) {
+bool delay_reset(struct InsertingEngine *engine) {
     return delay_init(engine);
 }
 
