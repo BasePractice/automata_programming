@@ -38,6 +38,7 @@ add_subdirectory(06.Control_Program)
 add_subdirectory(08.Simple_Program)
 add_subdirectory(09.FSM_SimInTech_Program)
 add_subdirectory(10.FSM_InsertElement)
+add_subdirectory(11.FSM_ControlPneumo)
 
 add_library(tests_main STATIC 00.Base/catch2/catch.hpp 00.Base/tests_main.cpp)
 
