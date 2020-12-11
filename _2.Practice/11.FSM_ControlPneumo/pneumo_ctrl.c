@@ -7,7 +7,7 @@
 #define DELAY_DELTA(delay)      1
 #else
 #define TIMEOUT_DELTA(timeout)  ((timeout) * 1000)
-#define DELAY_DELTA(delay)      ((delay) * 1)
+#define DELAY_DELTA(delay)      ((delay) * 1000)
 #endif
 
 #if defined(PNEUMO_DEBUG)

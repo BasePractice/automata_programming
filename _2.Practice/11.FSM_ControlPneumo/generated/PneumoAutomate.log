@@ -1,0 +1,165 @@
+
+C:\SimInTech\bin\CodeTemplates\VC2019>REM Установка системных переменных студии (для 2019) 
+
+C:\SimInTech\bin\CodeTemplates\VC2019>set path=C:\SimInTech\bin\;C:\SimInTech\bin\include_mvtu\;C:\SimInTech\bin\images_mvtu\;C:\Program Files\Common Files\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\Program Files\GTK2-Runtime Win64\bin;C:\Program Files\dotnet\;C:\Program Files\WireGuard\;D:\msys64\mingw64\bin;C:\Users\pastor\AppData\Local\ValidatorBuddy;C:\Users\pastor\scoop\shims;D:\git\bin;C:\Users\pastor\.cargo\bin;C:\Program Files (x86)\Common Files\Hilscher GmbH\TLRDecode;D:\Python27\Scripts;D:\Python27;D:\miktex\miktex\bin\x64\;C:\Program Files (x86)\gnupg\bin;C:\Users\pastor\AppData\Local\Microsoft\WindowsApps;D:\gcc-arm\bin;C:\intelFPGA\18.1\modelsim_ase\win32aloem;C:\Users\pastor\go\bin;C:\Users\pastor\AppData\Roaming\npm;D:\Code\bin;C:\Users\pastor\.dotnet\tools;;c:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\ 
+
+C:\SimInTech\bin\CodeTemplates\VC2019>REM Установка архитектуры сборки модуля в зависимости от разрядности загрузчика 
+
+C:\SimInTech\bin\CodeTemplates\VC2019>IF "64" == "64" (
+call vcvarsall.bat x64  
+ SET VC_PLATFORM="x64" 
+) 
+**********************************************************************
+** Visual Studio 2019 Developer Command Prompt v16.8.2
+** Copyright (c) 2020 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+Microsoft (R) Build Engine версии 16.8.2+25e4d540b для .NET Framework
+(C) Корпорация Майкрософт (Microsoft Corporation). Все права защищены.
+
+Сборка начата 11.12.2020 11:33:43.
+Проект "C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj" в узле 1 (целевые объекты rebuild).
+_PrepareForClean:
+  Файл "..\temp\Release\example_cpp.tlog\example_cpp.lastbuildstate" удаляется.
+InitializeBuildStatus:
+  Обращение к "..\temp\Release\example_cpp.tlog\unsuccessfulbuild".
+VcpkgTripletSelection:
+  Using triplet "x64-windows" from "E:\GitHub\vcpkg\scripts\buildsystems\msbuild\..\..\..\installed\x64-windows\"
+ClCompile:
+  c:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\bin\HostX86\x64\CL.exe /c /I"E:\GitHub\vcpkg\scripts\buildsystems\msbuild\..\..\..\installed\x64-windows\include" /nologo /W3 /WX- /diagnostics:column /Od /Ob1 /D WIN32 /D _DEBUG /D _WINDOWS /D _USRDLL /D EXAMPLE_CPP_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm /EHa /MT /GS- /arch:SSE2 /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR- /Yc"stdafx.h" /Fp"..\temp\Release\example_cpp.pch" /Fo"..\temp\Release\\" /Fd"..\temp\Release\vc142.pdb" /Gd /TC /FC /errorReport:queue stdafx.cpp
+cl : командная строка warning D9035: использование параметра "Gm" нежелательно, он будет удален в следующих выпусках [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+cl : командная строка warning D9007: для "/Gm" требуется "/Zi или /ZI"; параметр пропущен [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+cl : командная строка warning D9002: пропуск неизвестного параметра "/arch:SSE2" [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  stdafx.cpp
+  c:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\bin\HostX86\x64\CL.exe /c /I"E:\GitHub\vcpkg\scripts\buildsystems\msbuild\..\..\..\installed\x64-windows\include" /nologo /W3 /WX- /diagnostics:column /Od /Ob1 /D WIN32 /D _DEBUG /D _WINDOWS /D _USRDLL /D EXAMPLE_CPP_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm /EHa /MT /GS- /arch:SSE2 /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR- /Fo"..\temp\Release\\" /Fd"..\temp\Release\vc142.pdb" /Gd /TC /FC /errorReport:queue dllmain.cpp
+cl : командная строка warning D9035: использование параметра "Gm" нежелательно, он будет удален в следующих выпусках [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+cl : командная строка warning D9007: для "/Gm" требуется "/Zi или /ZI"; параметр пропущен [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+cl : командная строка warning D9002: пропуск неизвестного параметра "/arch:SSE2" [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  dllmain.cpp
+  c:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\bin\HostX86\x64\CL.exe /c /I"E:\GitHub\vcpkg\scripts\buildsystems\msbuild\..\..\..\installed\x64-windows\include" /nologo /W3 /WX- /diagnostics:column /Od /Ob1 /D WIN32 /D _DEBUG /D _WINDOWS /D _USRDLL /D EXAMPLE_CPP_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm /EHa /MT /GS- /arch:SSE2 /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR- /Fo"..\temp\Release\\" /Fd"..\temp\Release\vc142.pdb" /Gd /TC /FC /errorReport:queue example.c
+cl : командная строка warning D9035: использование параметра "Gm" нежелательно, он будет удален в следующих выпусках [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+cl : командная строка warning D9007: для "/Gm" требуется "/Zi или /ZI"; параметр пропущен [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+cl : командная строка warning D9002: пропуск неизвестного параметра "/arch:SSE2" [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  example.c
+C:\SimInTech\bin\CodeTemplates\VC2019\src\init.inc(10,5): warning C4101: c: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\init.inc(9,5): warning C4101: j: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\init.inc(8,5): warning C4101: i: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(25,6): warning C4101: u_r: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(17,8): warning C4101: tmp3: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(19,8): warning C4101: tmp5: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(20,8): warning C4101: tmp6: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(14,5): warning C4101: itmp3: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(18,8): warning C4101: tmp4: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(22,6): warning C4101: f: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(21,8): warning C4101: tmp7: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(12,5): warning C4101: itmp1: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(23,6): warning C4101: tmp_f_1: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(11,5): warning C4101: c: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(10,5): warning C4101: j: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(9,5): warning C4101: i: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(16,8): warning C4101: tmp2: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(24,6): warning C4101: u_s: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(15,8): warning C4101: tmp1: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(13,5): warning C4101: itmp2: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(25,6): warning C4101: u_r: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(17,8): warning C4101: tmp3: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(19,8): warning C4101: tmp5: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(20,8): warning C4101: tmp6: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(14,5): warning C4101: itmp3: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(18,8): warning C4101: tmp4: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(22,6): warning C4101: f: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(21,8): warning C4101: tmp7: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(12,5): warning C4101: itmp1: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(23,6): warning C4101: tmp_f_1: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(11,5): warning C4101: c: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(10,5): warning C4101: j: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(9,5): warning C4101: i: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(16,8): warning C4101: tmp2: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(24,6): warning C4101: u_s: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(15,8): warning C4101: tmp1: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(13,5): warning C4101: itmp2: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+Link:
+  c:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\bin\HostX86\x64\link.exe /ERRORREPORT:QUEUE /OUT:"..\bin\example_cpp.dll" /INCREMENTAL /NOLOGO /LIBPATH:"E:\GitHub\vcpkg\scripts\buildsystems\msbuild\..\..\..\installed\x64-windows\lib" /LIBPATH:"E:\GitHub\vcpkg\scripts\buildsystems\msbuild\..\..\..\installed\x64-windows\lib\manual-link" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib "E:\GitHub\vcpkg\scripts\buildsystems\msbuild\..\..\..\installed\x64-windows\lib\*.lib" /DEF:"example_cpp.def" /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"..\bin\example_cpp.pdb" /SUBSYSTEM:WINDOWS /LTCG:incremental /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"..\bin\example_cpp.lib" /MACHINE:X64 /DLL ..\temp\Release\dllmain.obj
+  ..\temp\Release\example.obj
+  ..\temp\Release\stdafx.obj
+LINK : warning LNK4075: не учитывается "/INCREMENTAL" из-за спецификации "/LTCG" [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+     Создается библиотека ..\bin\example_cpp.lib и объект ..\bin\example_cpp.exp
+  LINK : указан параметр /LTCG, но не требуется создание кода; удалите /LTCG из командной строки компоновки для повышения производительности компоновщика
+  example_cpp.vcxproj -> C:\SimInTech\bin\CodeTemplates\VC2019\bin\example_cpp.dll
+AppLocalFromInstalled:
+  pwsh.exe -ExecutionPolicy Bypass -noprofile -File "E:\GitHub\vcpkg\scripts\buildsystems\msbuild\applocal.ps1" "C:\SimInTech\bin\CodeTemplates\VC2019\bin\example_cpp.dll" "E:\GitHub\vcpkg\scripts\buildsystems\msbuild\..\..\..\installed\x64-windows\bin" "..\temp\Release\example_cpp.tlog\example_cpp.write.1u.tlog" "..\temp\Release\vcpkg.applocal.log"
+  "pwsh.exe" не является внутренней или внешней
+  командой, исполняемой программой или пакетным файлом.
+  Выход из команды "pwsh.exe -ExecutionPolicy Bypass -noprofile -File "E:\GitHub\vcpkg\scripts\buildsystems\msbuild\applocal.ps1" "C:\SimInTech\bin\CodeTemplates\VC2019\bin\example_cpp.dll" "E:\GitHub\vcpkg\scripts\buildsystems\msbuild\..\..\..\installed\x64-windows\bin" "..\temp\Release\example_cpp.tlog\example_cpp.write.1u.tlog" "..\temp\Release\vcpkg.applocal.log"" с кодом 9009.
+  "C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe" -ExecutionPolicy Bypass -noprofile -File "E:\GitHub\vcpkg\scripts\buildsystems\msbuild\applocal.ps1" "C:\SimInTech\bin\CodeTemplates\VC2019\bin\example_cpp.dll" "E:\GitHub\vcpkg\scripts\buildsystems\msbuild\..\..\..\installed\x64-windows\bin" "..\temp\Release\example_cpp.tlog\example_cpp.write.1u.tlog" "..\temp\Release\vcpkg.applocal.log"
+FinalizeBuildStatus:
+  Файл "..\temp\Release\example_cpp.tlog\unsuccessfulbuild" удаляется.
+  Обращение к "..\temp\Release\example_cpp.tlog\example_cpp.lastbuildstate".
+Сборка проекта "C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj" завершена (целевые объекты rebuild).
+
+Сборка успешно завершена.
+
+"C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj" (целевой объект rebuild ) (1) ->
+(Целевой объект ClCompile) -> 
+  cl : командная строка warning D9035: использование параметра "Gm" нежелательно, он будет удален в следующих выпусках [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  cl : командная строка warning D9007: для "/Gm" требуется "/Zi или /ZI"; параметр пропущен [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  cl : командная строка warning D9002: пропуск неизвестного параметра "/arch:SSE2" [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+
+
+"C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj" (целевой объект rebuild ) (1) ->
+  cl : командная строка warning D9035: использование параметра "Gm" нежелательно, он будет удален в следующих выпусках [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  cl : командная строка warning D9007: для "/Gm" требуется "/Zi или /ZI"; параметр пропущен [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  cl : командная строка warning D9002: пропуск неизвестного параметра "/arch:SSE2" [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+
+
+"C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj" (целевой объект rebuild ) (1) ->
+  cl : командная строка warning D9035: использование параметра "Gm" нежелательно, он будет удален в следующих выпусках [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  cl : командная строка warning D9007: для "/Gm" требуется "/Zi или /ZI"; параметр пропущен [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  cl : командная строка warning D9002: пропуск неизвестного параметра "/arch:SSE2" [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\init.inc(10,5): warning C4101: c: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\init.inc(9,5): warning C4101: j: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\init.inc(8,5): warning C4101: i: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(25,6): warning C4101: u_r: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(17,8): warning C4101: tmp3: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(19,8): warning C4101: tmp5: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(20,8): warning C4101: tmp6: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(14,5): warning C4101: itmp3: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(18,8): warning C4101: tmp4: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(22,6): warning C4101: f: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(21,8): warning C4101: tmp7: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(12,5): warning C4101: itmp1: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(23,6): warning C4101: tmp_f_1: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(11,5): warning C4101: c: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(10,5): warning C4101: j: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(9,5): warning C4101: i: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(16,8): warning C4101: tmp2: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(24,6): warning C4101: u_s: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(15,8): warning C4101: tmp1: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\prog.inc(13,5): warning C4101: itmp2: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(25,6): warning C4101: u_r: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(17,8): warning C4101: tmp3: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(19,8): warning C4101: tmp5: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(20,8): warning C4101: tmp6: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(14,5): warning C4101: itmp3: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(18,8): warning C4101: tmp4: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(22,6): warning C4101: f: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(21,8): warning C4101: tmp7: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(12,5): warning C4101: itmp1: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(23,6): warning C4101: tmp_f_1: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(11,5): warning C4101: c: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(10,5): warning C4101: j: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(9,5): warning C4101: i: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(16,8): warning C4101: tmp2: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(24,6): warning C4101: u_s: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(15,8): warning C4101: tmp1: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+  C:\SimInTech\bin\CodeTemplates\VC2019\src\state.inc(13,5): warning C4101: itmp2: неиспользованная локальная переменная [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+
+
+"C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj" (целевой объект rebuild ) (1) ->
+(Целевой объект Link) -> 
+  LINK : warning LNK4075: не учитывается "/INCREMENTAL" из-за спецификации "/LTCG" [C:\SimInTech\bin\CodeTemplates\VC2019\src\example_cpp.vcxproj]
+
+    Предупреждений: 47
+    Ошибок: 0
+
+Прошло времени 00:00:05.38
