@@ -25,7 +25,7 @@ static int iterator_next(struct Iterator *it) {
     int ch = -1;
     if (it != 0) {
         if (it->it < it->size) {
-            ch = it->text[it->it++];
+            ch = (int)it->text[it->it++];
         }
     }
     return ch;
@@ -62,7 +62,8 @@ static bool one_zero_plus(const char *text) {
                 }
                 return false;
             }
-
+            default:
+                return false;
         }
     } while (ch != -1);
     return true;
@@ -109,6 +110,8 @@ static bool xyz(const char *text) {
                     break;
                 return false;
             }
+            default:
+                return false;
         }
     } while (ch != -1);
     return true;
@@ -121,7 +124,6 @@ bool match(enum Type type, const char *text) {
         case ONE_ZERO_PLUS:
             return one_zero_plus(text);
         case XYZ:
-            return xyz(text);
         case OTHER:
             return xyz(text);
         default:
