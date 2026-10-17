@@ -193,8 +193,15 @@ jobs:
           key: takt-${{ runner.os }}-${{ hashFiles('takt/Cargo.lock') }}
           restore-keys: takt-${{ runner.os }}-
 
+      # Каталог сборки задан явно: с сентября 2026 года в репозитории Takt
+      # лежит .cargo/config.toml с target-dir = "target/precheck", и бинарники
+      # уезжали из target/release. Сборка при этом проходила, а выкладка
+      # падала на «No files were found» — задание факультативное, и отказ
+      # оставался незамеченным. Переменная окружения сильнее файла настроек.
       - name: Собрать taktc и takt-sim
         working-directory: takt
+        env:
+          CARGO_TARGET_DIR: target
         run: |
           cargo build --release -p takt-lang --bin taktc
           cargo build --release -p takt-sim --bin takt-sim

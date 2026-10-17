@@ -62,6 +62,19 @@ if (NOT TAKTC_BIN)
     return()
 endif ()
 
+include(StatecraftTakt)
+statecraft_takt_usable("${TAKTC_BIN}" TAKTC_USABLE)
+if (NOT TAKTC_USABLE)
+    # Путь забывается: иначе обновлённый taktc (например, в ~/.local/bin) не
+    # нашёлся бы при следующей конфигурации — find_program не ищет заново то,
+    # что уже лежит в кэше.
+    unset(TAKTC_BIN CACHE)
+    unset(TAKT_SIM_BIN CACHE)
+    message(STATUS "statecraft: погрузчик собирается без системы управления "
+            "(планировщик и модель цеха доступны)")
+    return()
+endif ()
+
 set(LOADER_GEN_DIR "${CMAKE_CURRENT_BINARY_DIR}/generated")
 file(MAKE_DIRECTORY "${LOADER_GEN_DIR}")
 

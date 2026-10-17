@@ -29,9 +29,12 @@ struct Bench {
     int alarm_raised_at;
 };
 
-static bool bench_read_bit(Watchdog_In_BitPort port, void *userdata) {
+/* bit — номер разряда порта. Порты сторожевого таймера однобитные, и он
+   всегда 0; у порта вида [bit; 8] он выбирал бы разряд. */
+static bool bench_read_bit(Watchdog_In_BitPort port, uint8_t bit, void *userdata) {
     struct Bench *bench = (struct Bench *)userdata;
 
+    (void)bit;
     if (port == WATCHDOG_WATCHDOG_PORT_KICK) {
         if (bench->tick >= 0 && bench->tick < SCENARIO_LEN)
             return SCENARIO[bench->tick] != 0;
@@ -39,9 +42,10 @@ static bool bench_read_bit(Watchdog_In_BitPort port, void *userdata) {
     return false;
 }
 
-static void bench_write_bit(Watchdog_Out_BitPort port, bool value, void *userdata) {
+static void bench_write_bit(Watchdog_Out_BitPort port, uint8_t bit, bool value, void *userdata) {
     struct Bench *bench = (struct Bench *)userdata;
 
+    (void)bit;
     if (port == WATCHDOG_WATCHDOG_PORT_ALARM) {
         bench->alarm = value ? 1 : 0;
         if (bench->alarm && bench->alarm_raised_at < 0)

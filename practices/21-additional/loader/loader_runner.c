@@ -12,9 +12,13 @@
 
 #include "loader_runner.h"
 
-static bool runner_read_bit(Loader_In_BitPort port, void *userdata) {
+/* bit — номер разряда порта: у однобитных портов погрузчика он всегда 0, а
+   у порта вида [bit; 8] выбирал бы разряд. Takt передаёт его с версии языка
+   0.19; до неё обработчик разряда не получал. */
+static bool runner_read_bit(Loader_In_BitPort port, uint8_t bit, void *userdata) {
     struct LoaderRunner *runner = (struct LoaderRunner *)userdata;
 
+    (void)bit;
     switch (port) {
     case LOADER_PORT_CMD_VALID:
         return runner->cmd_valid != 0;
@@ -30,10 +34,11 @@ static bool runner_read_bit(Loader_In_BitPort port, void *userdata) {
     return false;
 }
 
-static void runner_write_bit(Loader_Out_BitPort port, bool value, void *userdata) {
+static void runner_write_bit(Loader_Out_BitPort port, uint8_t bit, bool value, void *userdata) {
     struct LoaderRunner *runner = (struct LoaderRunner *)userdata;
     int flag = value ? 1 : 0;
 
+    (void)bit;
     switch (port) {
     case LOADER_PORT_CMD_ACK:
         runner->cmd_ack = flag;
@@ -62,9 +67,11 @@ static void runner_write_bit(Loader_Out_BitPort port, bool value, void *userdata
     }
 }
 
-static int64_t runner_read_numeric(Loader_In_NumericPort port, void *userdata) {
+/* index — элемент порта-массива; у числовых портов погрузчика массивов нет. */
+static int64_t runner_read_numeric(Loader_In_NumericPort port, uint8_t index, void *userdata) {
     struct LoaderRunner *runner = (struct LoaderRunner *)userdata;
 
+    (void)index;
     switch (port) {
     case LOADER_PORT_CMD_CODE:
         return runner->cmd_code;

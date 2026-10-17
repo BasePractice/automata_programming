@@ -30,6 +30,14 @@
   Не сверен листинг порождённого кода (@lst:watchdog-c): имена портов в нём
   без `PORT_`, а в драйвере --- с `PORT_`; какой вариант даёт текущий `taktc`,
   нужно проверить свежей сборкой компилятора.
+
+  Сверено 17.10.2026 сборкой `taktc` из ветки `v2` (язык 0.19.0). Верен
+  вариант драйвера: порты названы `<МОДЕЛЬ>_PORT_<ПОРТ>`, и @lst:watchdog-c
+  переписан по свежему выводу. Заодно у обработчиков `read_bit` и `write_bit`
+  появился номер разряда порта, у `read_numeric` --- номер элемента; драйвер
+  и погрузчик практики 21 исправлены. Сборка курса теперь сама проверяет
+  форму порождённого кода (`cmake/StatecraftTakt.cmake`): устаревший `taktc`
+  даёт предупреждение и пропуск Takt-практик, а не ошибку компилятора Си.
 ]
 
 = Зачем языку автоматов отдельный синтаксис
@@ -355,18 +363,18 @@
   ```c
   void WatchdogWatchdog_tick(WatchdogWatchdog *model, Watchdog *main) {
       if (model->state == WATCHDOG_WATCHDOG_INIT) {
-          (*main->write_bit)(WATCHDOG_WATCHDOG_ALARM, 0, main->userdata);
+          (*main->write_bit)(WATCHDOG_WATCHDOG_PORT_ALARM, 0, 0, main->userdata);
           model->state = WATCHDOG_WATCHDOG_WATCHING;
       }
       switch (model->state) {
           case WATCHDOG_WATCHDOG_WATCHING: {
-              if ((*main->read_bit)(WATCHDOG_WATCHDOG_KICK, main->userdata)) {
+              if ((*main->read_bit)(WATCHDOG_WATCHDOG_PORT_KICK, 0, main->userdata)) {
                   model->idle = 0;
               } else {
                   model->idle = model->idle + 1;
               }
               if (model->idle >= CONST_WATCHDOG_WATCHDOG_LIMIT) {
-                  (*main->write_bit)(WATCHDOG_WATCHDOG_ALARM, 1, main->userdata);
+                  (*main->write_bit)(WATCHDOG_WATCHDOG_PORT_ALARM, 0, 1, main->userdata);
                   model->state = WATCHDOG_WATCHDOG_TRIPPED;
                   break;
               }
@@ -388,7 +396,11 @@
 
 / Порты --- вызовы, а не переменные: обращение к `kick` превратилось в
   `(*main->read_bit)(...)`. Автоматная логика не знает, откуда берётся
-  значение; драйвер платформы подставляет функции.
+  значение; драйвер платформы подставляет функции. Второй аргумент вызова ---
+  номер разряда порта: у однобитного `kick` он всегда 0, у порта вида
+  `[bit; 8]` выбирал бы разряд. Имена портов отделены от имён состояний
+  сегментом `PORT_`: порт `kick` и состояние с тем же именем иначе дали бы
+  в Си два одинаковых перечислителя.
 / Состояние --- поле структуры: экземпляров модели может быть несколько,
   глобальных переменных нет.
 / Генерация детерминирована: один и тот же исходный файл даёт байт-в-байт
@@ -402,7 +414,7 @@
   "/src/12-takt/code/driver.c",
   lang: "c",
   from: 16,
-  to: 51,
+  to: 54,
   caption: [Драйвер: реализация портов модели через обратные вызовы],
 ) <lst:driver>
 

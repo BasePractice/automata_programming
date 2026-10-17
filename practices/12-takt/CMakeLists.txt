@@ -59,6 +59,17 @@ if (NOT TAKTC_BIN)
     return()
 endif ()
 
+include(StatecraftTakt)
+statecraft_takt_usable("${TAKTC_BIN}" TAKTC_USABLE)
+if (NOT TAKTC_USABLE)
+    # Путь забывается: иначе обновлённый taktc (например, в ~/.local/bin) не
+    # нашёлся бы при следующей конфигурации — find_program не ищет заново то,
+    # что уже лежит в кэше.
+    unset(TAKTC_BIN CACHE)
+    unset(TAKT_SIM_BIN CACHE)
+    return()
+endif ()
+
 message(STATUS "statecraft: taktc — ${TAKTC_BIN}")
 if (TAKT_SIM_BIN)
     message(STATUS "statecraft: takt-sim — ${TAKT_SIM_BIN}")
