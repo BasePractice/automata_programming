@@ -69,7 +69,12 @@ void elementary_print(const struct Elementary *ca, FILE *out);
 
 /* --- игра «Жизнь» --------------------------------------------------------- */
 
-#define LIFE_MAX_SIDE 64 /**< сторона поля «Жизни» */
+/**
+ * Сторона поля «Жизни». 256 — не требование лекции (её примеры укладываются
+ * в 64), а терминальной программы life_tui: при клетке в один пиксель поле
+ * равно экрану, и на широком терминале это больше двухсот клеток.
+ */
+#define LIFE_MAX_SIDE 256
 
 /** Поле игры «Жизнь»; за краем поле замкнуто в тор. */
 struct Life {
@@ -93,12 +98,31 @@ bool life_get(const struct Life *life, int x, int y);
  *   рост         gosper-gun;
  *   триплеты     triplet-step, triplet-v, triplet-diagonal, tromino;
  *   без предка   garden-of-eden.
+ *
+ * Не из лекции, а из LifeWiki и коллекции Golly:
+ *
+ *   натюрморты   pond, ship, snake;
+ *   осцилляторы  clock, octagon-2, figure-eight, koks-galaxy, tumbler,
+ *                queen-bee-shuttle;
+ *   корабли      copperhead (c/10), loafer (c/7), puffer-train;
+ *   рост         simkin-gun, growth-10, growth-5x5, growth-line, quadratic-20;
+ *   гептамино    b-heptomino, pi-heptomino, herschel;
+ *   долгожители  rabbits, blom, iwona, justyna, lidka, natural-lwss,
+ *                temp-pulsars.
  */
 bool life_place(struct Life *life, const char *name, int x, int y);
 
 /** Перебор известных имён фигур: @p index от нуля, NULL — имена кончились.
     Нужен программам, которые печатают список фигур или обходят их все. */
 const char *life_pattern_name(int index);
+
+/**
+ * Размер описывающего прямоугольника фигуры — чтобы поставить её в центр
+ * поля или подобрать поле, на котором она поместится.
+ *
+ * @return false — имя не распознано; @p width и @p height тогда не меняются.
+ */
+bool life_pattern_size(const char *name, int *width, int *height);
 
 /** Один ход. Поле замкнуто в тор по обеим осям — по той же причине, что и
     кольцо у одномерного автомата. */

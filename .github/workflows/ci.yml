@@ -46,6 +46,7 @@ jobs:
           cmake -S . -B build
           -DSTATECRAFT_BUILD_LECTURES=OFF
           -DSTATECRAFT_STRICT=ON
+          -DSTATECRAFT_BUILD_TUI=ON
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
 
       - name: Сборка примеров
