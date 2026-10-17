@@ -150,6 +150,37 @@ void ant_trail_snapshot(const struct AntFsm *fsm, int steps_limit, struct TrailS
     съеденную клетку тропы от клетки, где еды не было изначально. */
 bool ant_trail_has_food(int x, int y);
 
+/** Лежит ли клетка (x, y) на тропе — с едой или в разрыве. Разрывы еды не
+    содержат, но муравей обязан их пройти; на рисунке это сама тропа. */
+bool ant_trail_on_path(int x, int y);
+
+/**
+ * Прогон по шагам: поле, муравей и состояние автомата между тактами. Через
+ * него устроены и ant_trail_run, и снимки, поэтому пошаговый прогон
+ * программы-демонстратора не может разойтись с тем, что считают тесты.
+ */
+struct AntWalk {
+    char food[TRAIL_SIDE][TRAIL_SIDE];    /**< 1 — еда ещё на месте */
+    char visited[TRAIL_SIDE][TRAIL_SIDE]; /**< 1 — муравей в этой клетке побывал */
+    int x;
+    int y;
+    int dir;             /**< 0 — восток, 1 — юг, 2 — запад, 3 — север */
+    int state;           /**< текущее состояние автомата */
+    struct TrailRun run; /**< итог на текущий такт */
+};
+
+/** Исходная тропа, муравей в (0, 0) лицом на восток, состояние 0. */
+void ant_walk_init(struct AntWalk *walk);
+
+/**
+ * Один такт автомата @p fsm.
+ *
+ * @return false — такт не сделан: еда съедена вся (run.finished) либо у
+ *         автомата нет состояний. Лимит тактов здесь не проверяется — его
+ *         задаёт тот, кто шагает.
+ */
+bool ant_walk_step(struct AntWalk *walk, const struct AntFsm *fsm);
+
 #if defined(__cplusplus)
 }
 #endif

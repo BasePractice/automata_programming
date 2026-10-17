@@ -66,15 +66,9 @@ static const char *const EVOLVED_SPEC
 
 enum Direction { DIR_EAST, DIR_SOUTH, DIR_WEST, DIR_NORTH };
 
-struct World {
-    char food[TRAIL_SIDE][TRAIL_SIDE];
-    char visited[TRAIL_SIDE][TRAIL_SIDE];
-    int x;
-    int y;
-    enum Direction dir;
-};
+static int food_total(void);
 
-static void world_init(struct World *w) {
+void ant_walk_init(struct AntWalk *w) {
     int y;
     int x;
 
@@ -87,12 +81,14 @@ static void world_init(struct World *w) {
     w->x = 0;
     w->y = 0;
     w->dir = DIR_EAST;
+    w->state = 0;
     w->visited[0][0] = 1;
+    w->run.total = food_total();
 }
 
 /* Поле замкнуто в тор: муравей, ушедший за край, появляется с другой
    стороны. Так задача не зависит от того, где нарисована граница. */
-static void ahead(const struct World *w, int *nx, int *ny) {
+static void ahead(const struct AntWalk *w, int *nx, int *ny) {
     int dx = 0;
     int dy = 0;
 
@@ -116,7 +112,7 @@ static void ahead(const struct World *w, int *nx, int *ny) {
     *ny = (w->y + dy + TRAIL_SIDE) % TRAIL_SIDE;
 }
 
-static bool food_ahead(const struct World *w) {
+static bool food_ahead(const struct AntWalk *w) {
     int nx;
     int ny;
 
@@ -124,7 +120,7 @@ static bool food_ahead(const struct World *w) {
     return w->food[ny][nx] != 0;
 }
 
-int ant_trail_food_total(void) {
+static int food_total(void) {
     int y;
     int x;
     int count = 0;
@@ -135,6 +131,10 @@ int ant_trail_food_total(void) {
         }
     }
     return count;
+}
+
+int ant_trail_food_total(void) {
+    return food_total();
 }
 
 /*
@@ -420,65 +420,63 @@ bool ant_fsm_format(const struct AntFsm *fsm, char *out, size_t size) {
 
 /* --- прогон ---------------------------------------------------------------- */
 
-static struct TrailRun run(const struct AntFsm *fsm, int steps_limit, struct World *w) {
-    struct TrailRun result;
-    int state = 0;
-    int step;
+bool ant_walk_step(struct AntWalk *w, const struct AntFsm *fsm) {
+    int input;
+    enum AntAction action;
 
-    world_init(w);
-    result.eaten = 0;
-    result.total = ant_trail_food_total();
-    result.steps = 0;
-    result.last_eaten = 0;
-    result.finished = false;
-
-    if (fsm->state_count <= 0) {
-        return result;
+    if (fsm->state_count <= 0 || w->run.finished) {
+        return false;
     }
-
-    for (step = 0; step < steps_limit; ++step) {
-        int input = food_ahead(w) ? 1 : 0;
-        enum AntAction action = fsm->action[state][input];
-        int next_state = fsm->next[state][input];
-
-        switch (action) {
-        case ANT_STEP: {
-            int nx;
-            int ny;
-            ahead(w, &nx, &ny);
-            w->x = nx;
-            w->y = ny;
-            w->visited[ny][nx] = 1;
-            if (w->food[ny][nx]) {
-                w->food[ny][nx] = 0;
-                ++result.eaten;
-                result.last_eaten = step + 1;
-            }
-            break;
+    input = food_ahead(w) ? 1 : 0;
+    action = fsm->action[w->state][input];
+    switch (action) {
+    case ANT_STEP: {
+        int nx;
+        int ny;
+        ahead(w, &nx, &ny);
+        w->x = nx;
+        w->y = ny;
+        w->visited[ny][nx] = 1;
+        if (w->food[ny][nx]) {
+            w->food[ny][nx] = 0;
+            ++w->run.eaten;
+            w->run.last_eaten = w->run.steps + 1;
         }
-        case ANT_TURN_LEFT:
-            w->dir = (enum Direction)((w->dir + 3) % 4);
-            break;
-        case ANT_TURN_RIGHT:
-            w->dir = (enum Direction)((w->dir + 1) % 4);
-            break;
-        default:
-            break;
-        }
-
-        state = next_state;
-        result.steps = step + 1;
-        if (result.eaten == result.total) {
-            result.finished = true;
-            break;
-        }
+        break;
     }
-    return result;
+    case ANT_TURN_LEFT:
+        w->dir = (w->dir + 3) % 4;
+        break;
+    case ANT_TURN_RIGHT:
+        w->dir = (w->dir + 1) % 4;
+        break;
+    default:
+        break;
+    }
+    w->state = fsm->next[w->state][input];
+    ++w->run.steps;
+    if (w->run.eaten == w->run.total) {
+        w->run.finished = true;
+    }
+    return true;
+}
+
+static struct TrailRun run(const struct AntFsm *fsm, int steps_limit, struct AntWalk *w) {
+    ant_walk_init(w);
+    while (w->run.steps < steps_limit && ant_walk_step(w, fsm)) {}
+    return w->run;
 }
 
 struct TrailRun ant_trail_run(const struct AntFsm *fsm, int steps_limit) {
-    struct World w;
+    struct AntWalk w;
     return run(fsm, steps_limit, &w);
+}
+
+bool ant_trail_on_path(int x, int y) {
+    if (x < 0 || x >= TRAIL_SIDE || y < 0 || y >= TRAIL_SIDE) {
+        return false;
+    }
+    return TRAIL[y][x] != ' ';
 }
 
 bool ant_trail_has_food(int x, int y) {
@@ -489,7 +487,7 @@ bool ant_trail_has_food(int x, int y) {
 }
 
 void ant_trail_snapshot(const struct AntFsm *fsm, int steps_limit, struct TrailSnapshot *out) {
-    struct World w;
+    struct AntWalk w;
     int y;
     int x;
 
@@ -502,11 +500,11 @@ void ant_trail_snapshot(const struct AntFsm *fsm, int steps_limit, struct TrailS
     }
     out->x = w.x;
     out->y = w.y;
-    out->dir = (int)w.dir;
+    out->dir = w.dir;
 }
 
 void ant_trail_print(const struct AntFsm *fsm, int steps_limit, FILE *out) {
-    struct World w;
+    struct AntWalk w;
     struct TrailRun r = run(fsm, steps_limit, &w);
     int y;
     int x;

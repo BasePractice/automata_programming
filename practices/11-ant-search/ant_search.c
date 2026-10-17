@@ -20,6 +20,8 @@
 
 #include "ant_search.h"
 
+#include <limits.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "ant_ep93.h"
@@ -147,78 +149,91 @@ void ant_search_defaults_ep93(struct AntSearch *cfg) {
 
 /* --- (1 + 1)-эволюционная стратегия ------------------------------------------ */
 
-static bool hill_run(const struct AntSearch *cfg, const struct AntFsm *start,
-                     struct AntSearchResult *out, const struct AntSearchLog *log) {
+/*
+ * Всё, что поиск помнит между вызовами ant_search_advance. У (1 + 1)-ЭС это
+ * текущий автомат, датчик и счётчики; у EP93 — популяция (ant_ep93.c).
+ */
+struct AntSearchState {
+    struct AntSearch cfg;
+    struct Ep93State *ep93; /* не NULL — идёт поиск по статье */
     struct AntRandom random;
     struct AntFsm current;
-    struct AntFsm candidate;
     struct TrailRun current_run;
-    struct TrailRun candidate_run;
     struct AntSearchResult result;
-    long stall = 0;
-    long i;
+    long stall;
+};
 
-    ant_random_init(&random, cfg->seed);
+static void hill_begin(struct AntSearchState *s, const struct AntFsm *start) {
+    ant_random_init(&s->random, s->cfg.seed);
     if (start != NULL) {
-        current = *start;
+        s->current = *start;
     } else {
-        fsm_random(&current, cfg->max_states, &random);
+        fsm_random(&s->current, s->cfg.max_states, &s->random);
     }
-    current_run = ant_trail_run(&current, cfg->steps_limit);
+    s->current_run = ant_trail_run(&s->current, s->cfg.steps_limit);
 
-    memset(&result, 0, sizeof(result));
-    result.best = current;
-    result.run = current_run;
-    result.evaluations = 1;
+    memset(&s->result, 0, sizeof(s->result));
+    s->result.best = s->current;
+    s->result.run = s->current_run;
+    s->result.evaluations = 1;
+    s->stall = 0;
+}
 
-    /*
-     * Поиск не останавливается, когда тропа впервые пройдена: дальше он
-     * сокращает число тактов, и именно так получена история улучшений
-     * 315 → 295 → … → 181 из лекции.
-     */
-    for (i = 0; i < cfg->iterations; ++i) {
-        candidate = current;
-        if (cfg->stall_limit > 0 && stall >= cfg->stall_limit
-            && candidate.state_count < cfg->max_states) {
-            fsm_grow(&candidate, &random);
-            stall = 0;
-        } else {
-            fsm_mutate(&candidate, &random);
-        }
-        candidate_run = ant_trail_run(&candidate, cfg->steps_limit);
-        result.iterations_done = i + 1;
-        ++result.evaluations;
-        if (candidate_run.finished && result.solved_at == 0) {
-            result.solved_at = result.evaluations;
-        }
+/* Одна итерация: мутант текущего автомата и сравнение с ним. */
+static void hill_iteration(struct AntSearchState *s, const struct AntSearchLog *log) {
+    struct AntFsm candidate = s->current;
+    struct TrailRun candidate_run;
+    struct AntSearchResult *result = &s->result;
 
-        if (ant_run_better(&candidate_run, &current_run)
-            || run_equal(&candidate_run, &current_run)) {
-            current = candidate;
-            current_run = candidate_run;
-        }
-        if (ant_run_better(&candidate_run, &result.run)) {
-            result.best = candidate;
-            result.run = candidate_run;
-            ++result.improvements;
-            stall = 0;
-            if (log != NULL && log->improved != NULL) {
-                (*log->improved)(&result.best, &result.run, result.iterations_done, log->user);
-            }
-        } else {
-            ++stall;
-        }
+    if (s->cfg.stall_limit > 0 && s->stall >= s->cfg.stall_limit
+        && candidate.state_count < s->cfg.max_states) {
+        fsm_grow(&candidate, &s->random);
+        s->stall = 0;
+    } else {
+        fsm_mutate(&candidate, &s->random);
+    }
+    candidate_run = ant_trail_run(&candidate, s->cfg.steps_limit);
+    ++result->iterations_done;
+    ++result->evaluations;
+    if (candidate_run.finished && result->solved_at == 0) {
+        result->solved_at = result->evaluations;
     }
 
-    *out = result;
-    return true;
+    if (ant_run_better(&candidate_run, &s->current_run)
+        || run_equal(&candidate_run, &s->current_run)) {
+        s->current = candidate;
+        s->current_run = candidate_run;
+    }
+    if (ant_run_better(&candidate_run, &result->run)) {
+        result->best = candidate;
+        result->run = candidate_run;
+        ++result->improvements;
+        s->stall = 0;
+        if (log != NULL && log->improved != NULL) {
+            (*log->improved)(&result->best, &result->run, result->iterations_done, log->user);
+        }
+    } else {
+        ++s->stall;
+    }
+}
+
+/*
+ * Поиск не останавливается, когда тропа впервые пройдена: дальше он
+ * сокращает число тактов, и именно так получена история улучшений
+ * 315 → 295 → … → 181 из лекции.
+ */
+static bool hill_advance(struct AntSearchState *s, long budget, const struct AntSearchLog *log) {
+    while (budget > 0 && s->result.iterations_done < s->cfg.iterations) {
+        hill_iteration(s, log);
+        --budget;
+    }
+    return s->result.iterations_done >= s->cfg.iterations;
 }
 
 /* --- выбор алгоритма ---------------------------------------------------------- */
 
-bool ant_search_run(const struct AntSearch *cfg, const struct AntFsm *start,
-                    struct AntSearchResult *out, const struct AntSearchLog *log) {
-    if (cfg == NULL || out == NULL) {
+static bool config_valid(const struct AntSearch *cfg, const struct AntFsm *start) {
+    if (cfg == NULL) {
         return false;
     }
     if (cfg->max_states < 1 || cfg->max_states > ANT_FSM_MAX_STATES) {
@@ -230,8 +245,68 @@ bool ant_search_run(const struct AntSearch *cfg, const struct AntFsm *start,
     if (start != NULL && (start->state_count < 1 || start->state_count > cfg->max_states)) {
         return false;
     }
-    if (cfg->algorithm == ANT_SEARCH_EP93) {
-        return ant_ep93_run(cfg, start, out, log);
+    return true;
+}
+
+struct AntSearchState *ant_search_begin(const struct AntSearch *cfg, const struct AntFsm *start,
+                                        const struct AntSearchLog *log) {
+    struct AntSearchState *s;
+
+    if (!config_valid(cfg, start)) {
+        return NULL;
     }
-    return hill_run(cfg, start, out, log);
+    s = (struct AntSearchState *)calloc(1, sizeof(*s));
+    if (s == NULL) {
+        return NULL;
+    }
+    s->cfg = *cfg;
+    if (cfg->algorithm == ANT_SEARCH_EP93) {
+        s->ep93 = ant_ep93_begin(cfg, start, log);
+        if (s->ep93 == NULL) {
+            free(s);
+            return NULL;
+        }
+    } else {
+        hill_begin(s, start);
+    }
+    return s;
+}
+
+bool ant_search_advance(struct AntSearchState *s, long budget, const struct AntSearchLog *log) {
+    if (s->ep93 != NULL) {
+        return ant_ep93_advance(s->ep93, budget, log);
+    }
+    return hill_advance(s, budget, log);
+}
+
+const struct AntSearchResult *ant_search_result(const struct AntSearchState *s) {
+    return (s->ep93 != NULL) ? ant_ep93_result(s->ep93) : &s->result;
+}
+
+const struct AntSearch *ant_search_config(const struct AntSearchState *s) {
+    return &s->cfg;
+}
+
+void ant_search_end(struct AntSearchState *s) {
+    if (s != NULL) {
+        ant_ep93_end(s->ep93);
+        free(s);
+    }
+}
+
+bool ant_search_run(const struct AntSearch *cfg, const struct AntFsm *start,
+                    struct AntSearchResult *out, const struct AntSearchLog *log) {
+    struct AntSearchState *s;
+
+    if (out == NULL) {
+        return false;
+    }
+    s = ant_search_begin(cfg, start, log);
+    if (s == NULL) {
+        return false;
+    }
+    (void)ant_search_advance(s, LONG_MAX, log);
+    *out = *ant_search_result(s);
+    ant_search_end(s);
+    return true;
 }

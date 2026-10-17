@@ -18,9 +18,21 @@
 extern "C" {
 #endif
 
-/** Поиск по алгоритму статьи; вызывается из #ant_search_run. */
-bool ant_ep93_run(const struct AntSearch *cfg, const struct AntFsm *start,
-                  struct AntSearchResult *out, const struct AntSearchLog *log);
+/** Состояние поиска по алгоритму статьи между вызовами; внутреннее. */
+struct Ep93State;
+
+/** Начало поиска: популяция заведена и оценена. NULL — настройки
+    бессмысленны (популяция меньше двух, нет состязаний) или нет памяти. */
+struct Ep93State *ant_ep93_begin(const struct AntSearch *cfg, const struct AntFsm *start,
+                                 const struct AntSearchLog *log);
+
+/** Продолжить поиск примерно на @p budget оценок (поколение не делится).
+    true — поиск окончен: тропа пройдена или бюджет настроек исчерпан. */
+bool ant_ep93_advance(struct Ep93State *s, long budget, const struct AntSearchLog *log);
+
+const struct AntSearchResult *ant_ep93_result(const struct Ep93State *s);
+
+void ant_ep93_end(struct Ep93State *s);
 
 #if defined(__cplusplus)
 }

@@ -102,6 +102,38 @@ void ant_search_defaults_ep93(struct AntSearch *cfg);
 bool ant_search_run(const struct AntSearch *cfg, const struct AntFsm *start,
                     struct AntSearchResult *out, const struct AntSearchLog *log);
 
+/** Поиск, идущий по частям; внутреннее устройство скрыто. */
+struct AntSearchState;
+
+/**
+ * Начать поиск, не делая ни одной итерации сверх начальной оценки. Нужен
+ * тому, кто ищет по частям и между ними что-то показывает (программа
+ * ant_tui). Деление на части результата не меняет: ant_search_run устроен
+ * как begin + advance без предела + end.
+ *
+ * @return NULL — настройки бессмысленны (как у ant_search_run) или нет
+ *         памяти. Освобождается ant_search_end.
+ */
+struct AntSearchState *ant_search_begin(const struct AntSearch *cfg, const struct AntFsm *start,
+                                        const struct AntSearchLog *log);
+
+/**
+ * Продолжить поиск примерно на @p budget оценок: у EP93 поколение не
+ * делится, поэтому бюджет может быть превышен на половину популяции.
+ *
+ * @return true — поиск окончен: бюджет настроек исчерпан либо (EP93) тропа
+ *         пройдена. Дальнейшие вызовы ничего не делают.
+ */
+bool ant_search_advance(struct AntSearchState *s, long budget, const struct AntSearchLog *log);
+
+/** Итог на текущий момент: лучший автомат и счётчики. */
+const struct AntSearchResult *ant_search_result(const struct AntSearchState *s);
+
+/** Настройки, с которыми поиск начат. */
+const struct AntSearch *ant_search_config(const struct AntSearchState *s);
+
+void ant_search_end(struct AntSearchState *s);
+
 /**
  * Сравнение качества прогонов: сначала по числу съеденных клеток, при
  * равенстве — по числу тактов. Возвращает true, если a лучше b. Вынесено в

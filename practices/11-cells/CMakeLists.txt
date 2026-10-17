@@ -24,16 +24,19 @@ statecraft_tests(${PROJECT_NAME}-tests
         SOURCES cells_tests.cpp life_session_tests.cpp
         LIBS cells)
 
-# Терминальная «Жизнь» (life_tui.c) — необязательная цель. Режим терминала
-# задаётся через termios и ioctl: это POSIX, а не ISO C90, и на Windows их
-# нет. Логика программы (поле, история, каталог объектов) лежит в библиотеке
-# cells и проверяется тестами при любом значении опции.
-option(STATECRAFT_BUILD_TUI "Собирать терминальную игру «Жизнь» (нужен POSIX-терминал)" OFF)
+# Терминальные программы — необязательные цели: «Жизнь» (life_tui.c) здесь и
+# умный муравей (ant_tui.c) в 11-ant-search. Общий терминальный слой
+# (tui_term.c) построен на termios и ioctl: это POSIX, а не ISO C90, и на
+# Windows их нет. Логика программ (поле, история, каталоги) лежит в
+# библиотеках практик и проверяется тестами при любом значении опции.
+option(STATECRAFT_BUILD_TUI "Собирать терминальные программы практик 11 (нужен POSIX-терминал)" OFF)
 if (STATECRAFT_BUILD_TUI)
     if (UNIX)
+        statecraft_library(tui_term
+                SOURCES tui_term.c tui_term.h)
         statecraft_example(${PROJECT_NAME}-life-tui
                 SOURCES life_tui.c
-                LIBS cells)
+                LIBS cells tui_term)
         # Без терминала программа обязана сказать об этом и выйти, а не
         # испортить вывод управляющими последовательностями: ctest как раз
         # запускает её без терминала.
@@ -44,6 +47,6 @@ if (STATECRAFT_BUILD_TUI)
                     PASS_REGULAR_EXPRESSION "нужен терминал")
         endif ()
     else ()
-        message(WARNING "11-cells-life-tui: терминал POSIX недоступен, цель пропущена")
+        message(WARNING "11-cells: терминал POSIX недоступен, терминальные программы пропущены")
     endif ()
 endif ()
