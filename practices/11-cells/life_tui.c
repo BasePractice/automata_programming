@@ -154,6 +154,11 @@ static void draw_menu(struct App *app) {
     if (app->menu_index >= app->menu_top + lines) {
         app->menu_top = app->menu_index - lines + 1;
     }
+    /* Окно выросло, пока меню было открыто: начало списка, выбранное под
+       прежнюю высоту, уводило бы последние строки за конец каталога. */
+    if (app->menu_top > count - lines) {
+        app->menu_top = count - lines;
+    }
 
     tui_move(s, top, left);
     tui_reverse(s);

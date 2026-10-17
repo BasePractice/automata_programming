@@ -20,8 +20,8 @@ statecraft_tests(${PROJECT_NAME}-tests
         SOURCES ant_search_tests.cpp ant_session_tests.cpp
         LIBS ant_search)
 
-# Терминальный умный муравей — необязательная цель, как и «Жизнь» в
-# 11-cells: общий терминальный слой tui_term заводится там же и только при
+# Терминальный умный муравей — необязательная цель, как и «Жизнь»: общий
+# терминальный слой tui_term заводится в practices/CMakeLists.txt только при
 # STATECRAFT_BUILD_TUI на POSIX-системе.
 if (TARGET tui_term)
     statecraft_example(${PROJECT_NAME}-tui

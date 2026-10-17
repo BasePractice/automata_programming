@@ -33,6 +33,24 @@ add_library(fsm STATIC common/fsm.c common/fsm.h)
 target_include_directories(fsm PUBLIC common)
 statecraft_strict_c(fsm)
 
+# --- терминальный слой -----------------------------------------------------
+# Терминальные программы практик 10 и 11 (машина Тьюринга, «Жизнь», умный
+# муравей) — необязательные цели. Общий слой (common/tui_term.c) построен на
+# termios и ioctl: это POSIX, а не ISO C90, и на Windows их нет. Заводится
+# здесь, а не в практике, потому что подпроекты конфигурируются по порядку и
+# практика 10 не увидела бы цель, объявленную в 11. Логика программ лежит в
+# библиотеках практик и проверяется тестами при любом значении опции.
+option(STATECRAFT_BUILD_TUI "Собирать терминальные программы практик 10 и 11 (нужен POSIX-терминал)" OFF)
+if (STATECRAFT_BUILD_TUI)
+    if (UNIX)
+        add_library(tui_term STATIC common/tui_term.c common/tui_term.h)
+        target_include_directories(tui_term PUBLIC common)
+        statecraft_strict_c(tui_term)
+    else ()
+        message(WARNING "терминал POSIX недоступен, терминальные программы практик 10 и 11 пропущены")
+    endif ()
+endif ()
+
 # --- общая часть тестов -----------------------------------------------------
 if (STATECRAFT_BUILD_TESTS)
     add_library(tests_main STATIC common/tests_main.cpp common/catch2/catch.hpp)
